@@ -140,6 +140,26 @@ export const constantRouterMap = [
   },
 
   {
+    path: '/excel',
+    component: Layout,
+    redirect: '/excel/export-excel',
+    name: 'excel',
+    alwaysShow: true,
+    meta: {
+      title: 'excel',
+      icon: 'excel'
+    },
+    children: [
+      {
+        path: 'export-excel',
+        component: () => import('@/views/excel/export-excel'),
+        name: 'exportExcel',
+        meta: { title: 'Export Excel' }
+      }
+    ]
+  },
+
+  {
     path: 'external-link',
     component: Layout,
     children: [

@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-      <h3 class="title">vue-admin-template</h3>
+      <h3 class="title">Angel</h3>
       <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
@@ -18,7 +18,7 @@
           name="password"
           auto-complete="on"
           placeholder="password"
-          @keyup.enter.native="handleLogin" />
+          @keyup.enter.native="handleLogin" /><!--  @keyup.enter.native   键盘回车触发事件 -->
         <span class="show-pwd" @click="showPwd">
           <svg-icon icon-class="eye" />
         </span>
@@ -28,10 +28,6 @@
           Sign in
         </el-button>
       </el-form-item>
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: admin</span>
-      </div>
     </el-form>
   </div>
 </template>
@@ -42,14 +38,14 @@ import { isvalidUsername } from '@/utils/validate'
 export default {
   name: 'Login',
   data() {
-    const validateUsername = (rule, value, callback) => {
+    const validateUsername = (rule, value, callback) => { // 定义用户名验证函数
       if (!isvalidUsername(value)) {
         callback(new Error('请输入正确的用户名'))
       } else {
         callback()
       }
     }
-    const validatePass = (rule, value, callback) => {
+    const validatePass = (rule, value, callback) => { // 定义密码验证函数
       if (value.length < 5) {
         callback(new Error('密码不能小于5位'))
       } else {
@@ -58,8 +54,8 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: 'admin'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -71,15 +67,18 @@ export default {
     }
   },
   watch: {
+    // 监听路由，路由发生变化时执行handler函数
     $route: {
       handler: function(route) {
-        this.redirect = route.query && route.query.redirect
+        this.redirect = route.query && route.query.redirect // 自动跳转到指点页面
+        // console.log(route.query)
+        // console.log(route.query.re direct)
       },
-      immediate: true
+      immediate: true // 立即执行
     }
   },
   methods: {
-    showPwd() {
+    showPwd() { // 密码显示函数
       if (this.pwdType === 'password') {
         this.pwdType = ''
       } else {
@@ -88,11 +87,12 @@ export default {
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
+        // 会验证该form所有字段的返回值，如果有不通过的valid就是false
         if (valid) {
           this.loading = true
-          this.$store.dispatch('Login', this.loginForm).then(() => {
+          this.$store.dispatch('Login', this.loginForm).then(() => { // dispatch：含有异步操作，例如向后台提交数据，写法： this.$store.dispatch('mutations方法名',值)  用来触发action中的方法
             this.loading = false
-            this.$router.push({ path: this.redirect || '/' })
+            this.$router.push({ path: this.redirect || '/' }) // 实现路由跳转
           }).catch(() => {
             this.loading = false
           })
