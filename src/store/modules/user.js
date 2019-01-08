@@ -41,14 +41,14 @@ const user = {
     },
 
     // 获取用户信息
-    GetInfo({ commit, state }) {
-      return new Promise((resolve, reject) => {
+    GetInfo({ commit, state }) { // Promise的构造函数接收一个参数，是函数，并且传入两个参数：resolve，reject，分别表示异步操作执行成功后的回调函数和异步操作执行失败后的回调函数。
+      return new Promise((resolve, reject) => { // new Promise(function(resolve, reject){ ...做一些异步操作}
         getInfo(state.token).then(response => {
           const data = response.data
           if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', data.roles)
+            commit('SET_ROLES', data.roles) // 异步操作执行成功后的回调函数
           } else {
-            reject('getInfo: roles must be a non-null array !')
+            reject('getInfo: roles must be a non-null array !') // 异步操作执行失败后的回调函数。
           }
           commit('SET_NAME', data.name)
           commit('SET_AVATAR', data.avatar)
