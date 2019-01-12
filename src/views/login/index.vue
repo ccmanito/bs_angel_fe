@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-      <h3 class="title">Angel</h3>
+      <h3 class="title">Angel Centre</h3>
       <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
@@ -23,24 +23,60 @@
           <svg-icon icon-class="eye" />
         </span>
       </el-form-item>
+      <el-form-item prop="verifycode">
+        <el-input v-model="loginForm.verifycode" placeholder="请输入验证码" class="identifyinput"/>
+      </el-form-item>
+      <el-form-item>
+        <div class="identifybox">
+          <div @click="refreshCode">
+            <s-identify :identifycode="identifycode"/>
+          </div>
+          <el-button class="textbtn" style="color: #eee" type="text" @click="refreshCode">看不清，换一张 ? </el-button>
+        </div>
+      </el-form-item>
+      <div>
+        <div class="buttons">
+          <el-button class="textbtn" style="color: #eee" type="text" @click="refreshCode">忘记 密码 ? </el-button>
+          <!-- <el-button class="textbtn" style="float: right;color: #eee" type="text" @click="gotoregedit">没有账户 ? 去注册>></el-button> -->
+          <el-button class="textbtn" style="float: right;color: #eee" type="text" @click="showDialog()">没有账户 ? 去注册>></el-button>
+        </div>
+      </div>
       <el-form-item>
         <el-button :loading="loading" type="primary" style="width:100%;" @click.native.prevent="handleLogin">
           Sign in
         </el-button>
       </el-form-item>
     </el-form>
+    <div>
+      <Regedit :dialogvisible.sync="showdialog" />
+    </div>
   </div>
 </template>
 
 <script>
-import { isvalidUsername } from '@/utils/validate'
-
+// import { isvalidUsername } from '@/utils/validate'
+import SIdentify from './identify.vue'
+import Regedit from './regedit.vue'
 export default {
   name: 'Login',
+  components: {
+    Regedit,
+    SIdentify
+  },
   data() {
-    const validateUsername = (rule, value, callback) => { // 定义用户名验证函数
-      if (!isvalidUsername(value)) {
-        callback(new Error('请输入正确的用户名'))
+    // const validateUsername = (rule, value, callback) => { // 定义用户名验证函数
+    //   if (!isvalidUsername(value)) {
+    //     callback(new Error('请输入正确的用户名'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
+    const validateVerifycode = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入验证码'))
+      } else if (value !== this.identifycode) {
+        console.log('validateVerifycode:', value)
+        callback(new Error('验证码不正确!'))
       } else {
         callback()
       }
@@ -55,15 +91,23 @@ export default {
     return {
       loginForm: {
         username: '',
-        password: ''
+        password: '',
+        verifycode: ''
       },
+      checked: false,
+      identifycodes: '1234567890',
+      identifycode: '',
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePass }]
+        // username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        password: [{ required: true, trigger: 'blur', validator: validatePass }],
+        verifycode: [
+          { required: true, trigger: 'blur', validator: validateVerifycode }
+        ]
       },
       loading: false,
       pwdType: 'password',
-      redirect: undefined
+      redirect: undefined,
+      showdialog: false
     }
   },
   watch: {
@@ -77,7 +121,15 @@ export default {
       immediate: true // 立即执行
     }
   },
+  mounted() {
+    // 验证码初始化
+    this.identifycode = ''
+    this.makeCode(this.identifycodes, 4)
+  },
   methods: {
+    showDialog() {
+      this.showdialog = true
+    },
     showPwd() { // 密码显示函数
       if (this.pwdType === 'password') {
         this.pwdType = ''
@@ -85,12 +137,31 @@ export default {
         this.pwdType = 'password'
       }
     },
+    randomNum(min, max) {
+      return Math.floor(Math.random() * (max - min) + min)
+    },
+    // 切换验证码
+    refreshCode() {
+      this.identifycode = ''
+      this.makeCode(this.identifycodes, 4)
+    },
+    makeCode(o, l) {
+      for (let i = 0; i < l; i++) {
+        this.identifycode += this.identifycodes[
+          this.randomNum(0, this.identifycodes.length)
+        ]
+      }
+      console.log(this.identifycode)
+    },
+    // gotoregedit() {
+    //   this.$router.push({ path: '/regedit' }) // 实现路由跳转
+    // },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         // 会验证该form所有字段的返回值，如果有不通过的valid就是false
         if (valid) {
           this.loading = true
-          this.$store.dispatch('Login', this.loginForm).then(() => { // dispatch：含有异步操作，例如向后台提交数据，写法： this.$store.dispatch('mutations方法名',值)  用来触发action中的方法
+          this.$store.dispatch('LoginByUsername', this.loginForm).then(() => { // dispatch：含有异步操作，例如向后台提交数据，写法： this.$store.dispatch('mutations方法名',值)  用来触发action中的方法
             this.loading = false
             this.$router.push({ path: this.redirect || '/' }) // 实现路由跳转
           }).catch(() => {
@@ -107,15 +178,36 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-$bg:#2d3a4b;
-$light_gray:#eee;
+  $bg:rgb(56, 129, 89);
+  $light_gray:#eee;
+  $cursor: #fff;
 
 /* reset element-ui css */
+.el-dialog {
+  border-radius: 7px;
+  background: rgb(253, 249, 249);
+}
+.el-dialog__header {
+  background: #d5dfdf;
+  border-radius: 7px;
+}
+.el-dialog__title {
+  font-size: 20px;
+  font-weight:bold;
+  color:#436e6e;
+}
+.el-dialog .el-form-item__content {
+    line-height: 28px;
+    position: relative;
+    font-size: 14px;
+}
+
 .login-container {
   .el-input {
     display: inline-block;
-    height: 47px;
+    height: 40px;
     width: 85%;
+    // margin-top: -100px;
     input {
       background: transparent;
       border: 0px;
@@ -133,15 +225,25 @@ $light_gray:#eee;
   .el-form-item {
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
+    border-radius: 7px;
     color: #454545;
   }
 }
 
 </style>
-
+<style scoped>
+.identifybox{
+  display: flex;
+  justify-content: space-between;
+  margin-top:4px;
+  margin-bottom: -10px;
+}
+.iconstyle{
+  color:rgb(187, 117, 52);
+}
+</style>
 <style rel="stylesheet/scss" lang="scss" scoped>
-$bg:#2d3a4b;
+$bg: #44855F;
 $dark_gray:#889aa4;
 $light_gray:#eee;
 .login-container {
@@ -149,14 +251,18 @@ $light_gray:#eee;
   height: 100%;
   width: 100%;
   background-color: $bg;
-  .login-form {
+  .login-form { // 表单css
     position: absolute;
     left: 0;
     right: 0;
     width: 520px;
     max-width: 100%;
     padding: 35px 35px 15px 35px;
-    margin: 120px auto;
+    // margin: 120px auto;
+    margin-top: 90px;
+    margin-right: auto;
+    margin-bottom: 120px;
+    margin-left: auto;
   }
   .tips {
     font-size: 14px;

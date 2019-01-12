@@ -3,7 +3,7 @@
  */
 
 export function isvalidUsername(str) { // 用户名验证函数
-  const valid_map = ['admin', 'student'] // 角色类型
+  const valid_map = ['admin', 'student']
   return valid_map.indexOf(str.trim()) >= 0
 }
 

@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/login'
+import { loginByUsername, logout, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
@@ -26,19 +26,47 @@ const user = {
 
   actions: {
     // 登录
-    Login({ commit }, userInfo) {
+    // Login({ commit }, userInfo) {
+    //   const username = userInfo.username.trim()
+    //   return new Promise((resolve, reject) => {
+    //     login(username, userInfo.password).then(response => {
+    //       const data = response.data
+    //       console.log(data)
+    //       setToken(data.token)
+    //       commit('SET_TOKEN', data.token)
+    //       resolve()
+    //     }).catch(error => {
+    //       reject(error)
+    //     })
+    //   })
+    // },
+    LoginByUsername({ commit }, userInfo) {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
-        login(username, userInfo.password).then(response => {
+        loginByUsername(username, userInfo.password).then(response => {
           const data = response.data
-          setToken(data.token)
           commit('SET_TOKEN', data.token)
+          setToken(response.data.token)
           resolve()
         }).catch(error => {
           reject(error)
         })
       })
     },
+
+    // // 第三方验证登录
+    // LoginByThirdparty({ commit, state }, code) {
+    //   return new Promise((resolve, reject) => {
+    //     commit('SET_CODE', code)
+    //     loginByThirdparty(state.status, state.email, state.code).then(response => {
+    //       commit('SET_TOKEN', response.data.token)
+    //       setToken(response.data.token)
+    //       resolve()
+    //     }).catch(error => {
+    //       reject(error)
+    //     })
+    //   })
+    // },
 
     // 获取用户信息
     GetInfo({ commit, state }) { // Promise的构造函数接收一个参数，是函数，并且传入两个参数：resolve，reject，分别表示异步操作执行成功后的回调函数和异步操作执行失败后的回调函数。

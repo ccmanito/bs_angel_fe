@@ -21,6 +21,7 @@ module.exports = {
         "allowFirstLine": false
       }
     }],
+    // "vue/attribute-hyphenation": ["error", ""],
     "vue/name-property-casing": ["error", "PascalCase"],
     'accessor-pairs': 2,
     'arrow-spacing': [2, {
@@ -190,7 +191,7 @@ module.exports = {
     'object-curly-spacing': [2, 'always', {
       objectsInObjects: false
     }],
-    'array-bracket-spacing': [2, 'never']
+    'array-bracket-spacing': [2, 'never'],
   }
 }
 

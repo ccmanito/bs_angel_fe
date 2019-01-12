@@ -32,6 +32,7 @@ import Layout from '../views/layout/Layout'
 
 export const constantRouterMap = [
   { path: '/login', component: () => import('@/views/login/index'), hidden: true }, // 一级路由
+  { path: '/regedit', component: () => import('@/views/regedit/index'), hidden: true }, // 一级路由
   { path: '/404', component: () => import('@/views/404'), hidden: true },
 
   {
