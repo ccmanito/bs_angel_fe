@@ -11,11 +11,12 @@
     <div class="regeditform">
       <el-form ref="regeditForm" :model="regeditForm" :rules="rules">
         <el-form-item prop="name">
-          <span class="svg-container">
-            <svg-icon icon-class="user" />
-          </span>
           <span class="tip">你的昵称</span>
-          <el-input v-model="regeditForm.name" clearable="true" placeholder="真实姓名或常用昵称" prefix-icon=""/>
+          <el-input v-model="regeditForm.name" clearable="true" placeholder="真实姓名或常用昵称" prefix-icon="">
+            <span slot="prepend" class="svg-container">
+              <svg-icon icon-class="user" />
+            </span>
+          </el-input>
         </el-form-item>
         <el-form-item prop="username">
           <span class="tip">手机号或Email</span>
@@ -121,13 +122,6 @@ export default {
   padding:0px;
   width: 58%;
   /* text-align:center; */
-}
-.svg-container {
-    padding: 6px 5px 6px 15px;
-    color: $dark_gray;
-    vertical-align: middle;
-    width: 30px;
-    display: inline-block;
 }
 .tip {
   font-size: 16px;
