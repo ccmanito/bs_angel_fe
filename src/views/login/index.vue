@@ -42,7 +42,7 @@
         </div>
       </div>
       <el-form-item>
-        <el-button :loading="loading" type="primary" style="width:100%;" @click.native.prevent="handleLogin">
+        <el-button type="primary" style="width:100%;" @click.native.prevent="handleLogin">
           Sign in
         </el-button>
       </el-form-item>
@@ -57,7 +57,8 @@
 </template>
 
 <script>
-// import { isvalidUsername } from '@/utils/validate'
+import { isvalidUsername1 } from '@/utils/validate'
+import { validateusertype } from '@/utils/validate'
 import SIdentify from './identify.vue'
 import Regedit from './regedit.vue'
 import Changepwd from './changepwd.vue'
@@ -69,13 +70,6 @@ export default {
     Changepwd
   },
   data() {
-    // const validateUsername = (rule, value, callback) => { // 定义用户名验证函数
-    //   if (!isvalidUsername(value)) {
-    //     callback(new Error('请输入正确的用户名'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
     const validateVerifycode = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入验证码'))
@@ -97,13 +91,14 @@ export default {
       loginForm: {
         username: '',
         password: '',
+        identity_type: '',
         verifycode: ''
       },
       checked: false,
       identifycodes: '1234567890',
       identifycode: '',
       loginRules: {
-        // username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        username: [{ required: true, trigger: 'blur', validator: isvalidUsername1 }],
         password: [{ required: true, trigger: 'blur', validator: validatePass }],
         verifycode: [
           { required: true, trigger: 'blur', validator: validateVerifycode }
@@ -115,7 +110,7 @@ export default {
         backgroundPosition: 'center center',
         backgroundSize: 'cover'
       },
-      loading: false,
+      // loading: false,
       pwdType: 'password',
       redirect: undefined,
       showdialog: false,
@@ -169,14 +164,13 @@ export default {
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
+        this.loginForm.identity_type = validateusertype(this.loginForm.username)
         // 会验证该form所有字段的返回值，如果有不通过的valid就是false
         if (valid) {
-          this.loading = true
           this.$store.dispatch('LoginByUsername', this.loginForm).then(() => { // dispatch：含有异步操作，例如向后台提交数据，写法： this.$store.dispatch('mutations方法名',值)  用来触发action中的方法
-            this.loading = false
             this.$router.push({ path: this.redirect || '/' }) // 实现路由跳转
           }).catch(() => {
-            this.loading = false
+            //
           })
         } else {
           console.log('error submit!!')

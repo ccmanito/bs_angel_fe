@@ -3,8 +3,8 @@
     v-dialogDrag
     ref="dialog__wrapper"
     :visible="dialogvisible1"
+    :close-on-click-modal="false"
     title="找回密码"
-    close-on-click-modal="false"
     append-to-body
     width="40%"
     @close="onClose()">
@@ -33,16 +33,12 @@
           <el-input v-model="findForm.password2" clearable="true" placeholder="输入验证密码" prefix-icon=""/>
         </el-form-item>
         <el-form-item>
-          <el-button :loading="loading" type="primary" style="width:100%;" @click.native.prevent="summit">
+          <el-button type="primary" style="width:100%;" @click.native.prevent="summit">
             提交
           </el-button>
         </el-form-item>
       </el-form>
     </div>
-    <!-- <div slot="footer" class="dialog-footer">
-      <el-button @click="onClose()">取 消</el-button>
-      <el-button type="primary" @click="onClose()">确 定</el-button>
-    </div> -->
   </el-dialog>
 </template>
 

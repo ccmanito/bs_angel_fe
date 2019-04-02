@@ -10,10 +10,11 @@ import request from '@/utils/request'
 //     }
 //   })
 // }
-export function loginByUsername(username, password) {
+export function loginByUsername(username, password, identity_type) {
   const data = {
     username,
-    password
+    password,
+    identity_type
   }
   return request({
     url: 'api/user/login',

@@ -1,4 +1,5 @@
 import { loginByUsername, logout, getInfo } from '@/api/login'
+import { regeditSub } from '@/api/regedit'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
@@ -6,18 +7,44 @@ const user = {
     token: getToken(),
     name: '',
     avatar: '',
-    roles: []
+    roles: [],
+    mobile: '',
+    sex: '',
+    github: '',
+    usertype: '',
+    email: '',
+    school: '',
+    college: '',
+    major: '',
+    grade: '',
+    classname: '',
+    profrssional: '', // 职业
+    livinghabits: '', // 生活习惯
+    interest: []
   },
 
   mutations: {
     SET_TOKEN: (state, token) => {
       state.token = token
     },
-    SET_NAME: (state, name) => {
-      state.name = name
+    SET_USER: (state, user) => {
+      state.name = user.name
+      state.avatar = user.avatar
+      state.email = user.email
+      state.sex = user.sex
+      state.mobile = user.mobile
+      state.github = user.github
+      state.school = user.school
+      state.college = user.college
+      state.major = user.major
+      state.grade = user.grade
+      state.classname = user.classname
+      state.profrssional = user.profrssional
+      state.livinghabits = user.livinghabits
+      state.interest = user.interest
     },
-    SET_AVATAR: (state, avatar) => {
-      state.avatar = avatar
+    SET_USERTYPE: (state, usertype) => {
+      state.usertype = usertype
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
@@ -25,25 +52,36 @@ const user = {
   },
 
   actions: {
-    // 登录
-    // Login({ commit }, userInfo) {
-    //   const username = userInfo.username.trim()
-    //   return new Promise((resolve, reject) => {
-    //     login(username, userInfo.password).then(response => {
-    //       const data = response.data
-    //       console.log(data)
-    //       setToken(data.token)
-    //       commit('SET_TOKEN', data.token)
-    //       resolve()
-    //     }).catch(error => {
-    //       reject(error)
-    //     })
-    //   })
-    // },
+    GetUserType({ commit }, info) {
+      return new Promise((resolve, reject) => {
+        commit('SET_USERTYPE', info)
+        resolve()
+      })
+    },
+    // github第三方登录
+    RegeditGithub({ commit }, token) {
+      return new Promise((resolve, reject) => {
+        commit('SET_TOKEN', token)
+        setToken(token)
+        resolve()
+      })
+    },
+    RegeditSub({ commit }, Info) {
+      return new Promise((resolve, reject) => {
+        regeditSub(Info).then(response => {
+          const data = response.data
+          commit('SET_TOKEN', data.token)
+          setToken(response.data.token)
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
     LoginByUsername({ commit }, userInfo) {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
-        loginByUsername(username, userInfo.password).then(response => {
+        loginByUsername(username, userInfo.password, userInfo.identity_type).then(response => {
           const data = response.data
           commit('SET_TOKEN', data.token)
           setToken(response.data.token)
@@ -78,8 +116,9 @@ const user = {
           } else {
             reject('getInfo: roles must be a non-null array !') // 异步操作执行失败后的回调函数。
           }
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
+          // commit('SET_NAME', data.name)
+          // commit('SET_AVATAR', data.avatar)
+          commit('SET_USER', data)
           resolve(response)
         }).catch(error => {
           reject(error)
