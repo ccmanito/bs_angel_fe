@@ -27,7 +27,7 @@ export default {
     ])
   },
   mounted() {
-    // this.openPrompt()
+    this.openPrompt()
   },
   methods: {
     openPrompt() {

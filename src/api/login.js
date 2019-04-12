@@ -17,7 +17,7 @@ export function loginByUsername(username, password, identity_type) {
     identity_type
   }
   return request({
-    url: 'api/user/login',
+    url: 'user/login',
     method: 'post',
     data
   })
@@ -25,7 +25,7 @@ export function loginByUsername(username, password, identity_type) {
 
 export function getInfo(token) {
   return request({
-    url: 'api/user/info',
+    url: 'user/info',
     method: 'get',
     params: { token }
   })
@@ -33,7 +33,7 @@ export function getInfo(token) {
 
 export function logout() {
   return request({
-    url: 'api/user/logout',
+    url: 'user/logout',
     method: 'post'
   })
 }
