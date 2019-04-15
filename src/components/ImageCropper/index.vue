@@ -109,7 +109,7 @@
 <script>
 /* eslint-disable */
 'use strict'
-import request from '@/utils/request'
+import request from './utils/request'
 import language from './utils/language.js'
 import mimes from './utils/mimes.js'
 import data2blob from './utils/data2blob.js'
@@ -119,7 +119,7 @@ export default {
     // 域，上传文件name，触发事件会带上（如果一个页面多个图片上传控件，可以做区分
     field: {
       type: String,
-      'default': 'avatar'
+      'default': 'file'
     },
     // 原名key，类似于id，触发事件会带上（如果一个页面多个图片上传控件，可以做区分
     ki: {
@@ -134,11 +134,15 @@ export default {
       type: String,
       'default': ''
     },
+    token: {
+      type: String,
+      'default': ''
+    },
     // 其他要上传文件附带的数据，对象格式
     params: {
       type: Object,
       'default': null
-    },
+    }, 
     // Add custom headers
     headers: {
       type: Object,
@@ -192,7 +196,7 @@ export default {
     // 是否支持跨域
     withCredentials: {
       type: Boolean,
-      'default': false
+      'default': true
     }
   },
   data() {
@@ -781,9 +785,10 @@ export default {
         url,
         createImgUrl,
         field,
+        token = 'BcM4U6mciW4jUpbkc_UNl4-QjMLs24m7_-rhIYEu:5-hER4wkswBCjF3Fu5HM953CBtQ=:eyJzY29wZSI6ImJzX2FuZ2VsIiwiZGVhZGxpbmUiOjE1NTUzMzIxMTB9',
         ki
       } = this
-      this.$emit('crop-success', createImgUrl, field, ki)
+      this.$emit('crop-success', createImgUrl, field, ki, token)
       if (typeof url === 'string' && url) {
         this.upload()
       } else {
@@ -829,6 +834,7 @@ export default {
         data: fmData
       }).then(resData => {
         that.loading = 2
+        console.log(resData)
         that.$emit('crop-upload-success', resData.data)
       }).catch(err => {
         if (that.value) {

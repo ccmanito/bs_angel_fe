@@ -1,4 +1,4 @@
-import { loginByUsername, logout, getInfo } from '@/api/login'
+import { loginByUsername, logout, getInfo, syncAvatar } from '@/api/login'
 import { regeditSub } from '@/api/regedit'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
@@ -27,6 +27,9 @@ const user = {
     SET_TOKEN: (state, token) => {
       state.token = token
     },
+    SET_AVATAR: (state, avatar) => {
+      state.avatar = avatar
+    },
     SET_USER: (state, user) => {
       state.name = user.name
       state.avatar = user.avatar
@@ -52,6 +55,14 @@ const user = {
   },
 
   actions: {
+    SyncAvatar({ commit }, info) {
+      return new Promise((resolve, reject) => {
+        syncAvatar(info).then(res => {
+          commit('SET_AVATAR', info.avatar)
+        })
+        resolve()
+      })
+    },
     GetUserType({ commit }, info) {
       return new Promise((resolve, reject) => {
         commit('SET_USERTYPE', info)

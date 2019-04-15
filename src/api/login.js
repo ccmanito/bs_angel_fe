@@ -37,3 +37,11 @@ export function logout() {
     method: 'post'
   })
 }
+
+export function syncAvatar(info) {
+  return request({
+    url: 'user/syncavatar',
+    method: 'post',
+    data: info
+  })
+}

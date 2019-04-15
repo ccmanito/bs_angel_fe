@@ -2,15 +2,16 @@
   <div class="components-container">
     <pan-thumb :image="image"/>
 
-    <el-button type="primary" icon="upload" style="bottom: 12px;margin-left: 40px" @click="imagecropperShow=true">Change Avatar
+    <el-button type="primary" icon="upload" style="bottom: 12px;margin-left: 40px" @click="ChangeAvatar()">Change Avatar
     </el-button>
 
     <image-cropper
       v-show="imagecropperShow"
       :width="300"
       :height="300"
+      :params="params"
       :key="imagecropperKey"
-      url="https://httpbin.org/post"
+      url="http://upload.qiniup.com/"
       lang-type="en"
       @close="close"
       @crop-upload-success="cropSuccess"/>
@@ -20,22 +21,49 @@
 <script>
 import ImageCropper from '@/components/ImageCropper'
 import PanThumb from '@/components/PanThumb'
+import { getQiniuToken } from '@/api/personalinfo'
 
 export default {
   name: 'AvatarUpload',
   components: { ImageCropper, PanThumb },
-  data() {
-    return {
-      imagecropperShow: false,
-      imagecropperKey: 0,
-      image: 'https://wpimg.wallstcn.com/577965b9-bb9e-4e02-9f0c-095b41417191'
+  props: {
+    userinfo: {
+      type: Object,
+      'default': null
     }
   },
+  data() {
+    return {
+      token: '',
+      temp_parem: {},
+      params: {
+        token: ''
+      },
+      imagecropperShow: false,
+      imagecropperKey: 0,
+      image: ''
+    }
+  },
+  created() {
+    this.image = this.userinfo.avatar
+  },
   methods: {
+    ChangeAvatar() {
+      this.imagecropperShow = true
+      getQiniuToken().then(res => {
+        this.params.token = res.data.token
+      })
+    },
     cropSuccess(resData) {
       this.imagecropperShow = false
-      this.imagecropperKey = this.imagecropperKey + 1
-      this.image = resData.files.avatar
+      this.image = 'http://ppdlmnzmn.bkt.clouddn.com/' + resData.key // 临时域名
+      this.temp_parem.avatar = 'http://ppdlmnzmn.bkt.clouddn.com/' + resData.key
+      this.temp_parem.token = this.userinfo.token
+      this.$store.dispatch('SyncAvatar', this.temp_parem).then(() => {
+        console.log('执行异步刷新用户信息')
+      }).catch(() => {
+        //
+      })
     },
     close() {
       this.imagecropperShow = false
