@@ -6,3 +6,11 @@ export function getQiniuToken() {
     method: 'get'
   })
 }
+
+export function subPersonalInfo(data) {
+  return request({
+    url: 'user/info',
+    method: 'post',
+    data: data
+  })
+}
