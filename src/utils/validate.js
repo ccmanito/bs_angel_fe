@@ -12,7 +12,8 @@ export function isvalidUsername(from, value, callback) { // 用户名验证函�
       if (!reg.test(value)) {
         callback(new Error('请输入有效的邮箱'))
       } else {
-        getusername(value).then(res => {
+        const source = true
+        getusername(value, source).then(res => {
           if (res.data['identifier'].length > 0) {
             callback(new Error('用户名已存在！'))
           } else {
@@ -27,7 +28,8 @@ export function isvalidUsername(from, value, callback) { // 用户名验证函�
       if (!reg.test(value)) {
         callback(new Error('请输入有效的手机号码'))
       } else {
-        getusername(value).then(res => {
+        const source = true
+        getusername(value, source).then(res => {
           if (res.data['identifier'].length > 0) {
             callback(new Error('用户名已存在！'))
           } else {
@@ -35,6 +37,44 @@ export function isvalidUsername(from, value, callback) { // 用户名验证函�
           }
         })
       }
+    }
+  }
+}
+
+// 用户修改信息绑定验证邮箱
+export function isvalidEmail(from, value, callback) { // 用户名验证函数
+  if (value !== '') {
+    const reg = /^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+    if (!reg.test(value)) {
+      callback(new Error('请输入有效的邮箱'))
+    } else {
+      const source = false
+      getusername(value, source).then(res => {
+        if (res.data['identifier'].length > 0) {
+          callback(new Error('该邮箱已存在！'))
+        } else {
+          callback()
+        }
+      })
+    }
+  }
+}
+
+// 用户修改信息绑定验证手机号 isvalidMobile
+export function isvalidMobile(from, value, callback) {
+  if (value !== '') {
+    const reg = /^1[3456789]\d{9}$/
+    if (!reg.test(value)) {
+      callback(new Error('请输入有效的手机号码'))
+    } else {
+      const source = false
+      getusername(value, source).then(res => {
+        if (res.data['identifier'].length > 0) {
+          callback(new Error('该手机号已存在！'))
+        } else {
+          callback()
+        }
+      })
     }
   }
 }
@@ -46,7 +86,8 @@ export function isvalidUsername1(from, value, callback) { // 用户名验证函�
       if (!reg.test(value)) {
         callback(new Error('请输入有效的邮箱'))
       } else {
-        getusername(value).then(res => {
+        const source = true
+        getusername(value, source).then(res => {
           if (res.data['identifier'].length <= 0) {
             callback(new Error('用户名不存在！'))
           } else {
@@ -62,7 +103,8 @@ export function isvalidUsername1(from, value, callback) { // 用户名验证函�
       if (!reg.test(value)) {
         callback(new Error('请输入有效的手机号码'))
       } else {
-        getusername(value).then(res => {
+        const source = true
+        getusername(value, source).then(res => {
           if (res.data['identifier'].length <= 0) {
             callback(new Error('用户名不存在！'))
           } else {

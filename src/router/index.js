@@ -37,15 +37,61 @@ export const asyncRouterMap = [
     alwaysShow: true,
     meta: {
       title: '信息管理',
-      icon: 'user',
-      roles: ['admin', 'editor'] // you can set roles in root nav
+      icon: 'user1'
     },
     children: [
       {
         path: 'index',
         name: '编辑信息',
         component: () => import('@/views/personalinfo/index'),
-        meta: { title: '编辑信息', icon: 'edit', roles: ['admin'] }
+        meta: { title: '编辑信息', icon: 'edit1' }
+      }
+    ]
+  },
+  {
+    path: '/worker',
+    component: Layout,
+    alwaysShow: true,
+    meta: {
+      title: '流程中心',
+      icon: 'worker'
+    },
+    children: [
+      {
+        path: 'info',
+        name: '流程查询',
+        component: () => import('@/views/worker/info'),
+        meta: { title: '流程查询', icon: 'workerend', roles: ['admin', 'teacher'] }
+      },
+      {
+        path: 'auth',
+        name: '权限申请',
+        component: () => import('@/views/worker/auth'),
+        meta: { title: '权限申请', icon: 'applyauth' }
+      },
+      {
+        path: 'info',
+        name: '申请跟踪',
+        component: () => import('@/views/worker/info'),
+        meta: { title: '申请跟踪', icon: 'todo', roles: ['admin', 'teacher'] }
+      }
+    ]
+  },
+  {
+    path: '/system',
+    component: Layout,
+    alwaysShow: true,
+    meta: {
+      title: '系统管理',
+      icon: 'setting',
+      roles: ['admin', 'teacher']
+    },
+    children: [
+      {
+        path: 'info',
+        name: '系统信息',
+        component: () => import('@/views/system/info'),
+        meta: { title: '系统信息', icon: 'edit', roles: ['admin', 'teacher'] }
       }
     ]
   },

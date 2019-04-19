@@ -14,3 +14,10 @@ export function subPersonalInfo(data) {
     data: data
   })
 }
+
+export function getInterest() {
+  return request({
+    url: 'sys/interest',
+    method: 'get'
+  })
+}

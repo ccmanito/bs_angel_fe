@@ -8,10 +8,10 @@ export function regeditSub(params) {
   })
 }
 
-export function getusername(str) {
+export function getusername(str, source) {
   return request({
     url: 'user/isuser',
     method: 'get',
-    params: { str }
+    params: { str, source }
   })
 }

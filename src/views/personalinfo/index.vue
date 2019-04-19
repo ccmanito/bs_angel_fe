@@ -7,7 +7,7 @@
           <hr style="FILTER: progid:DXImageTransform.Microsoft.Shadow(color:#987cb9,direction:145,strength:15)" width="90%" color="#987cb9" SIZE="3">
 
           <div class="baseinfo-1" style="float:left">
-            <el-form :model="postfrom.baseinfo" label-width="80px" size="mini">
+            <el-form ref="postfrom.baseinfo" :model="postfrom.baseinfo" :rules="rules" label-width="80px" size="mini">
               <el-row class="from-row">
                 <el-col :span="12">
                   <el-form-item label="昵称">
@@ -23,12 +23,12 @@
               </el-row>
               <el-row class="from-row">
                 <el-col :span="12">
-                  <el-form-item label="手机号">
+                  <el-form-item label="手机号" prop="mobile">
                     <el-input v-model="postfrom.baseinfo.mobile" placeholder="请绑定手机号"/>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="邮箱" class="from-col">
+                  <el-form-item label="邮箱" prop="email" class="from-col">
                     <el-input v-model="postfrom.baseinfo.email" placeholder="请绑定邮箱"/>
                   </el-form-item>
                 </el-col>
@@ -105,7 +105,7 @@
           <hr style="FILTER: progid:DXImageTransform.Microsoft.Shadow(color:#987cb9,direction:145,strength:15);" width="90%" color="#987cb9" SIZE="2">
           <el-row class="from-row" style="margin-left: 15px;margin-top: 20px;">
             <el-col :span="23">
-              <el-form :model="postfrom.baseinfo" label-width="80px" size="mini">
+              <el-form :model="postfrom" label-width="80px" size="mini">
                 <el-form-item label="作息时间">
                   <el-select v-model="postfrom.habits.time" placeholder="请选择你的作息时间" clearable size="mini">
                     <el-option v-for="item in habitstimeOptions" :key="item" :label="item" :value="item"/>
@@ -114,7 +114,7 @@
               </el-form>
             </el-col>
             <el-col :span="23">
-              <el-form :model="postfrom.baseinfo" label-width="80px" size="mini">
+              <el-form :model="postfrom" label-width="80px" size="mini">
                 <el-form-item label="学习意向">
                   <el-radio v-model="postfrom.habits.learnintent" label="考研深造">考研深造</el-radio>
                   <el-radio v-model="postfrom.habits.learnintent" label="求职就业">求职就业</el-radio>
@@ -123,20 +123,43 @@
               </el-form>
             </el-col>
           </el-row>
-          <el-button type="primary" size="mini" class="button-change" @click="subbit">提交修改</el-button>
+          <el-button :disabled="issubbit" type="primary" size="mini" class="button-change" @click="beforeSubbit">提交修改</el-button>
         </div>
       </el-col>
     </el-row>
-
+    <el-dialog :visible.sync="dialogVisible" title="提示" width="40%">
+      <div v-if="postfrom.baseinfo.mobile !== mobile && postfrom.baseinfo.email !== email" class="dialogfrom">
+        <p>系统检测到你更新或绑定了手机号：<span>{{ postfrom.baseinfo.mobile }}</span> 和邮箱： <span>{{ postfrom.baseinfo.email }}</span></p>
+        <p>系统将为手机号和邮箱创建站内账号请在下方输入密码</p>
+        <el-input v-model="passwordlist.twopasswd" placeholder="请输入密码" type="password"/>
+      </div>
+      <div v-if="postfrom.baseinfo.mobile !== mobile && postfrom.baseinfo.email === email" class="dialogfrom">
+        <p>系统检测到你更新或绑定了手机号为<span>{{ postfrom.baseinfo.mobile }}</span></p>
+        <p>系统将为手机号创建站内账号请在下方输入密码</p>
+        <el-input v-model="passwordlist.mobilepasswd" placeholder="请输入密码" type="password"/>
+      </div>
+      <div v-if="postfrom.baseinfo.email !== email && postfrom.baseinfo.mobile === mobile" class="dialogfrom">
+        <p>系统检测到你更新或绑定了邮箱为<span>{{ postfrom.baseinfo.email }}</span></p>
+        <p>系统将为邮箱创建站内账号请在下方输入密码</p>
+        <el-input v-model="passwordlist.emailpasswd" placeholder="请输入密码" type="password"/>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="handleClose">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import AvatarUpload from './avatarUpload.vue'
-import { SCHOOL_MAP, COLLEGE_MAP, MAJOR_MAP, GRADE_MAP, CLASS_NAME_MAP, INTEREST_POOL_MAP, HABITS_TIME_MAP } from '@/utils/constants'
+import { SCHOOL_MAP, COLLEGE_MAP, MAJOR_MAP, GRADE_MAP, CLASS_NAME_MAP, HABITS_TIME_MAP } from '@/utils/constants'
 import { mapGetters } from 'vuex'
+import { isvalidEmail, isvalidMobile } from '@/utils/validate'
 import Interestlist from './stucomponents/interestlist.vue'
-import { subPersonalInfo } from '@/api/personalinfo'
+import { subPersonalInfo, getInterest } from '@/api/personalinfo'
+// import { getusername } from '@/api/regedit'
+
 export default {
   name: 'Personal',
   components: {
@@ -145,6 +168,13 @@ export default {
   },
   data() {
     return {
+      dialogVisible: false,
+      issubbit: false,
+      passwordlist: {
+        emailpasswd: '',
+        mobilepasswd: '',
+        twopasswd: ''
+      },
       postfrom: {
         interests: [],
         habits: {
@@ -160,7 +190,21 @@ export default {
       habitstimeOptions: [],
       classnameOptions: [],
       list1: [],
-      list2: []
+      list2: [],
+      mobile: '',
+      email: '',
+      rules: {
+        mobile: [
+          { required: true, trigger: 'blur', validator: isvalidMobile },
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }
+        ],
+        email: [
+          { required: true, trigger: 'blur', validator: isvalidEmail },
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {
@@ -168,22 +212,89 @@ export default {
       'userInfo'
     ])
   },
+  watch: {
+    $route: {
+      handler: function(route) {
+        this.SetInterest()
+        this.list1 = JSON.parse(this.userInfo.interests)
+        this.postfrom.baseinfo = this.userInfo
+        this.postfrom.habits = JSON.parse(this.userInfo.livinghabits)
+      },
+      immediate: true // 立即执行
+    }
+  },
   created() {
+    this.openHint()
     this.schoolOptions = SCHOOL_MAP
     this.collegeOptions = COLLEGE_MAP
     this.majorOptions = MAJOR_MAP
     this.gradeOptions = GRADE_MAP
     this.classnameOptions = CLASS_NAME_MAP
     this.habitstimeOptions = HABITS_TIME_MAP
-    this.list2 = INTEREST_POOL_MAP
-    this.list1 = this.list2.splice(0, 3)
+    this.list1 = JSON.parse(this.userInfo.interests)
     this.postfrom.baseinfo = this.userInfo
+    this.postfrom.habits = JSON.parse(this.userInfo.livinghabits)
+    this.SetInterest()
+    this.mobile = this.userInfo.mobile
+    this.email = this.userInfo.email
   },
   methods: {
-    subbit() { // 提交修改
+    openHint() {
+      this.$notify.info({
+        title: '温馨提示',
+        message: '<p>1.个人档案手机号和邮箱可以做为登录账号使用</p><p>2.兴趣爱好栏选择你最感兴趣的项并从上到下排序，可拖拉变更</p>',
+        dangerouslyUseHTMLString: true,
+        position: 'bottom-right',
+        duration: 60000
+      })
+    },
+    handleClose() {
+      // 确认绑定账号
+      this.dialogVisible = false
+      this.subbit(this.passwordlist)
+    },
+    SetInterest() {
+      getInterest().then(res => {
+        for (const i of this.list1) {
+          for (const j in res.data) {
+            if (i.id === res.data[j].id) {
+              res.data.splice(j, 1)
+            }
+          }
+        }
+        this.list2 = res.data
+      })
+    },
+    beforeSubbit() {
+      if (this.postfrom.baseinfo.mobile !== this.mobile || this.postfrom.baseinfo.email !== this.email) {
+        // 绑定了或更新手机号 || 绑定了绑定了或更新手机号邮箱
+        // 清空this.passwordlist
+        this.passwordlist.emailpasswd = ''
+        this.passwordlist.mobilepasswd = ''
+        this.passwordlist.twopasswd = ''
+        this.dialogVisible = true
+      } else {
+        this.subbit(false)
+      }
+    },
+    subbit(msg) { // 提交修改
       this.postfrom.interests = this.$refs.interestData.list1
-      console.log(this.postfrom)
-      subPersonalInfo(this.postfrom).then(res => {
+      // json 格式处理
+      console.log(msg)
+      const data = {}
+      data.passwordlist = msg
+      data.interests = JSON.stringify(this.postfrom.interests)
+      data.baseinfo = this.postfrom.baseinfo
+      data.habits = JSON.stringify(this.postfrom.habits)
+
+      subPersonalInfo(data).then(res => {
+        // 更新vuex,更新data
+        this.mobile = data.baseinfo.mobile
+        this.email = data.baseinfo.email
+        const tempuser = data.baseinfo
+        tempuser.interests = data.interests
+        tempuser.livinghabits = data.habits
+        this.$store.commit('SET_USER', tempuser)
         this.$message({
           message: '恭喜你，修改个人信息成功',
           type: 'success'
@@ -251,5 +362,12 @@ export default {
   .button-change {
     margin-left: 20px;
     margin-top: 50px;
+  }
+  .dialogfrom {
+    font-size: 15px;
+  }
+  .dialogfrom span {
+    color: brown;
+    font-weight: 600;
   }
 </style>

@@ -12,11 +12,11 @@
       <el-form ref="findForm" :model="findForm" :rules="rules">
         <el-form-item prop="name">
           <span class="tip">你的用户名</span>
-          <el-input v-model="findForm.name" clearable="true" placeholder="用户账号UserName" prefix-icon=""/>
+          <el-input v-model="findForm.name" clearable placeholder="用户账号UserName" prefix-icon=""/>
         </el-form-item>
         <el-form-item prop="email">
           <span class="tip">绑定的Email</span>
-          <el-input v-model="findForm.email" clearable="true" placeholder="账户绑定的 Email" prefix-icon=""/>
+          <el-input v-model="findForm.email" clearable placeholder="账户绑定的 Email" prefix-icon=""/>
         </el-form-item>
         <el-form-item prop="number">
           <span class="tip">获取验证码</span>
@@ -26,11 +26,11 @@
         </el-form-item>
         <el-form-item prop="password">
           <span class="tip">输入新密码</span>
-          <el-input v-model="findForm.password" clearable="true" placeholder="不少于 6 位的密码" prefix-icon=""/>
+          <el-input v-model="findForm.password" clearable placeholder="不少于 6 位的密码" prefix-icon=""/>
         </el-form-item>
         <el-form-item prop="password2">
           <span class="tip">再次输入密码</span>
-          <el-input v-model="findForm.password2" clearable="true" placeholder="输入验证密码" prefix-icon=""/>
+          <el-input v-model="findForm.password2" clearable placeholder="输入验证密码" prefix-icon=""/>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" style="width:100%;" @click.native.prevent="summit">

@@ -9,10 +9,10 @@
     width="40%"
     @close="onClose()">
     <div class="regeditform" style="margin-top: 25px">
-      <el-form ref="regeditForm" :model="regeditForm" :rules="rules">
+      <el-form ref="regeditForm" :model="regeditForm" :rules="rules" status-icon>
         <el-form-item prop="name">
           <span class="tip">你的昵称</span>
-          <el-input v-model="regeditForm.nickname" clearable="true" placeholder="常用昵称" prefix-icon="">
+          <el-input v-model="regeditForm.name" clearable placeholder="常用昵称">
             <!-- <span slot="prepend" class="svg-container">
               <svg-icon icon-class="user" />
             </span> -->
@@ -20,15 +20,15 @@
         </el-form-item>
         <el-form-item prop="identifier">
           <span class="tip">通行证ID</span>
-          <el-input v-model="regeditForm.identifier" clearable="true" placeholder="通行证Id账号" prefix-icon=""/>
+          <el-input v-model="regeditForm.identifier" clearable placeholder="通行证Id账号"/>
         </el-form-item>
         <el-form-item prop="credential">
           <span class="tip">输入密码</span>
-          <el-input v-model="regeditForm.credential" clearable="true" placeholder="不少于 6 位的密码" prefix-icon=""/>
+          <el-input v-model="regeditForm.credential" type="password" clearable placeholder="不少于 6 位的密码" auto-complete="off"/>
         </el-form-item>
         <el-form-item prop="twocredential">
-          <span class="tip">再次输入密码</span>
-          <el-input v-model="regeditForm.twocredential" clearable="true" placeholder="输入验证密码" prefix-icon=""/>
+          <span class="tip">确认密码</span>
+          <el-input v-model="regeditForm.twocredential" type="password" auto-complete="off" clearable placeholder="请再次输入密码"/>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" style="width:100%;margin-top: 15px" @click.native.prevent="handleRegedit">
@@ -81,7 +81,7 @@ export default {
     }
     return {
       regeditForm: {
-        nickname: '',
+        name: '',
         identifier: '',
         credential: '',
         twocredential: ''
