@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 创建work申请 ticket
 export function createWorkApply(data) {
   return request({
-    url: `worker/creation`,
+    url: `worker/info`,
     method: 'post',
     data: data
   })
@@ -21,7 +21,7 @@ export function updateWorkApply(id, data) {
 // 获取工单列表
 export function getWorkerList(params) {
   return request({
-    url: `redis/v1/worker`,
+    url: `worker/info`,
     method: 'get',
     params
   })

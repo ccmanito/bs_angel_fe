@@ -75,10 +75,11 @@ export const asyncRouterMap = [
         meta: { title: '权限申请', icon: 'applyauth' }
       },
       {
-        path: 'info',
-        name: '申请跟踪',
-        component: () => import('@/views/worker/info'),
-        meta: { title: '申请跟踪', icon: 'todo', roles: ['admin', 'teacher'] }
+        path: 'detail/:id(\\d+)',
+        component: () => import('@/views/worker/info/TicketDetail'),
+        name: 'TicketDetail',
+        meta: { title: '工单详情', noCache: true },
+        hidden: true
       }
     ]
   },

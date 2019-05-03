@@ -81,6 +81,7 @@ export default {
     resetForm() {
       this.form.keyword = ''
       this.form.school = ''
+      this.form.endtime = new Date()
       this.form.college = ''
       this.form.major = ''
       this.form.classname = ''
@@ -111,12 +112,11 @@ export default {
         if (valid) {
           const data = {
             description: '新建宿舍分配申请',
-            form_data: this.form,
+            form_data: JSON.stringify(this.form),
             userinfo: this.userInfo,
             endtime: this.form.endtime.getTime(),
             remark: this.form.remark
           }
-          console.log(data)
           createWorkApply(data).then(res => {
             this.$notify({
               title: '成功',

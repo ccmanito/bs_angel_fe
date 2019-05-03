@@ -1,14 +1,19 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-    <!-- <el-select v-model="searchForm.ApplicationType" size="mini" placeholder="应用类型" clearable class="filter-item" style="width: 110px">
-        <el-option label="redis" value="redis"/>
-        <el-option label="kafka" value="kafka"/>
+      <el-select v-model="searchForm.school" size="mini" placeholder="单位类型" clearable class="filter-item" style="width: 160px">
+        <el-option label="西安邮电大学" value="西安邮电大学"/>
+        <el-option label="西北政法大学" value="西北政法大学"/>
+        <el-option label="陕西师范大学" value="陕西师范大学"/>
+        <el-option label="西北大学" value="西北大学"/>
+        <el-option label="长安大学" value="长安大学"/>
       </el-select>
-      <el-input v-model="searchForm.proposer" size="mini" placeholder="申请人" style="width: 100px;" class="filter-item" @keyup.enter.native="handleFilter"/>
-      <el-input v-model="searchForm.department" size="mini" placeholder="部门" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter"/> -->
+      <el-select v-model="searchForm.step_id" size="mini" placeholder="流程状态" clearable class="filter-item" style="width: 160px">
+        <el-option label="流程中" value="1"/>
+        <el-option label="已完成" value="2"/>
 
-    <!-- <el-button size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button> -->
+      </el-select>
+      <el-button size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>
     <el-button size="mini" class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleApply()">新建分配</el-button>    </div>
 
     <div class="list-container">
@@ -22,62 +27,68 @@
           prop="id"
           label="id"
           align="center"
-          width="80"/>
+          width="70"/>
         <el-table-column
           prop="school"
-          label="申请单位"
+          label="分配单位"
           align="center"
-          width="80"/>
+          width="120"/>
         <el-table-column
-          prop="description"
+          prop="remark"
           label="简要概述"
           align="center"/>
         <el-table-column
-          prop="proposerName"
-          label="申请人"
-          align="center"/>
+          prop="proposer_name"
+          label="管理员"
+          align="center"
+          width="80"/>
         <el-table-column
-          prop="statusId"
+          prop="status_id "
           label="申请状态"
-          align="center">
+          align="center"
+          width="80">
           <template slot-scope="scope">
-            <el-tag :type="ticketStatusMap[scope.row.statusId].tagType">{{ ticketStatusMap[scope.row.statusId].title }}</el-tag>
+            <el-tag :type="ticketStatusMap[scope.row.status_id ].tagType" size="mini">{{ ticketStatusMap[scope.row.status_id ].title }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column
-          prop="stepId"
+          prop="step_id"
           label="当前步骤"
-          align="center">
+          align="center"
+          width="90">
           <template slot-scope="scope">
-            <el-tag :type="scope.row.stepId == 1?'primary':(scope.row.stepId == 3?'warning':'info')">{{ scope.row.stepId | ticketStepIdFilter }}</el-tag>
+            <el-tag :type="scope.row.step_id == 1?'primary':(scope.row.step_id == 3?'warning':'info')" size="mini">{{ scope.row.step_id | ticketStepIdFilter }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column
-          prop="createTime"
+          prop="create_date"
           label="申请时间"
           align="center"/>
         <el-table-column
-          label="操作"
+          prop="countdown"
+          label="距离关闭"
           align="center">
           <template slot-scope="scope">
-            <router-link :to="''+scope.row.id">
+            <font :color="scope.row.countdown | colorFilter">{{ scope.row.countdown }}</font>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          align="center"
+          width="120">
+          <template slot-scope="scope">
+            <router-link :to="'/worker/detail/'+scope.row.id">
               <el-button type="text" size="small">详情</el-button>
             </router-link>
+            &nbsp; &nbsp;
+            <el-button
+              size="mini"
+              type="text"
+              style="color: red"
+              @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <!-- 分页 -->
-      <div v-show="totalNum >= 10" class="pagination-container">
-        <el-pagination
-          :current-page="page"
-          :page-sizes="[10, 20, 30, 50]"
-          :page-size="pageSize"
-          :total="totalNum"
-          background
-          layout="total, sizes, prev, pager, next, jumper"
-          @size-change="paginationSizeChange"
-          @current-change="paginationChange"/>
-      </div>
     </div>
     <apply-dialog :visible.sync="createFormVisible" @submit="ApplySubmit"/>
   </div>
@@ -93,12 +104,19 @@ export default {
     ApplyDialog
   },
   filters: {
+    colorFilter: (value) => {
+      if (value === '已关闭') {
+        return '#F56C6C'
+      } else {
+        return '#67C23A'
+      }
+    },
     ticketStepIdFilter: (value) => {
       const ticketStepMap = {
-        1: '申请确认',
-        2: '自动节点',
-        3: '运维配置',
-        4: '结单'
+        1: '数据收集',
+        2: '聚类划分',
+        3: '宿舍分配',
+        4: '已完成'
       }
       return ticketStepMap[value]
     }
@@ -107,17 +125,12 @@ export default {
     return {
       loading: false,
       track: false,
-      page: 1,
-      pageSize: 10,
-      totalNum: 0,
       ticketList: [],
       searchForm: {},
       createFormVisible: false,
       ticketStatusMap: {
         1: { title: '申请中', tagType: '' },
-        2: { title: '操作完成', tagType: 'success' },
-        3: { title: '驳回', tagType: 'danger' },
-        4: { title: '撤回', tagType: 'info' }
+        2: { title: '操作完成', tagType: 'success' }
       }
     }
   },
@@ -126,24 +139,16 @@ export default {
       'userInfo'
     ])
   },
-  watch: {
-    // $route() {
-    //   if (this.$route.name === 'ApplyTrack') {
-    //     this.track = true
-    //   } else {
-    //     this.track = false
-    //   }
-    //   this.page = 1
-    //   this.fetchData()
-    // }
-  },
   created() {
-    // this.fetchData()
+    this.fetchData()
   },
   methods: {
+    handleDelete(index, row) {
+      console.log(index, row)
+    },
     handleFilter() {
       const filters = { ...this.searchForm }
-      this.fetchData({ page: 1, page_size: this.pageSize, filters: JSON.stringify(filters) })
+      this.fetchData({ token: this.userInfo.token, filters: JSON.stringify(filters) })
     },
     handleApply(msg) {
       this.createFormVisible = true
@@ -151,25 +156,13 @@ export default {
     fetchData(params) {
       this.loading = true
       this.ticketList = []
-      params = { page: this.page, page_size: this.pageSize, ...params }
+      params = { token: this.userInfo.token, ...params }
       getWorkerList(params).then(res => {
-        this.ticketList = res.data.resultList
-        this.totalNum = res.data.totalNum
+        this.ticketList = res.data
         this.loading = false
       }).catch(() => {
         this.loading = false
       })
-    },
-    // 分页器点击
-    paginationChange(val) {
-      this.page = val
-      this.fetchData()
-    },
-    // 分页size大小改变
-    paginationSizeChange(val) {
-      this.pageSize = val
-      this.page = 1
-      this.fetchData()
     },
     ApplySubmit() {
       this.fetchData()

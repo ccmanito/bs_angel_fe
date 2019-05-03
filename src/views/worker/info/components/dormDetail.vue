@@ -2,9 +2,9 @@
   <el-form ref="dataForm" :rules="applyRules" :model="form" :disabled="disabled" size="mini" label-position="right" label-width="100px">
     <hr style="FILTER: progid:DXImageTransform.Microsoft.Shadow(color:#987cb9,direction:145,strength:15);margin-top: 2px;margin-bottom: 20px;" width="100%" color="#987cb9" SIZE="3">
     <el-form-item label="关键字" prop="keyword">
-      <el-input v-model="form.keyWord" style="width: 95%;" placeholder="该申请唯一识别、例： xiyou-1"/>
+      <el-input v-model="form.keyword" style="width: 95%;" placeholder="该申请唯一识别、例： xiyou-1"/>
     </el-form-item>
-    <el-form-item label="结束时间">
+    <el-form-item label="结束时间" prop="endtime">
       <el-date-picker
         v-model="form.endtime"
         :picker-options="pickerOptions"
@@ -79,6 +79,12 @@ export default {
       gradeOptions: [],
       classnameOptions: [],
       applyRules: {
+        keyword: [
+          { required: true, message: '必选项，为该分配添加唯一识别的key', trigger: 'blur' }
+        ],
+        endtime: [
+          { required: true, message: '必选项，该新增宿舍分配数据收集结束时间', trigger: 'blur' }
+        ]
       },
       pickerOptions: {
         shortcuts: [
