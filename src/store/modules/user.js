@@ -20,7 +20,8 @@ const user = {
     classname: '',
     professional: '', // 职业
     livinghabits: '', // 生活习惯
-    interests: []
+    interests: [],
+    schoolinfo: ''
   },
 
   mutations: {
@@ -45,6 +46,7 @@ const user = {
       state.professional = user.professional
       state.livinghabits = user.livinghabits
       state.interests = user.interests
+      state.schoolinfo = user.schoolinfo
     },
     SET_USERTYPE: (state, usertype) => {
       state.usertype = usertype

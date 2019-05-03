@@ -40,7 +40,7 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="所读学校" class="from-col">
+                  <el-form-item label="所在学校" class="from-col">
                     <el-select v-model="postfrom.baseinfo.school" placeholder="请选择所在学校" clearable size="mini">
                       <el-option v-for="item in schoolOptions" :key="item" :label="item" :value="item"/>
                     </el-select>
@@ -49,35 +49,20 @@
               </el-row>
               <el-row class="from-row">
                 <el-col :span="12">
-                  <el-form-item label="学院">
-                    <el-select v-model="postfrom.baseinfo.college" placeholder="请选择所在学院" clearable size="mini">
-                      <el-option v-for="item in collegeOptions" :key="item" :label="item" :value="item"/>
-                    </el-select>
+                  <el-form-item label="权限级别">
+                    <span>&nbsp;&nbsp;管理员</span>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="年级" class="from-col">
-                    <el-select v-model="postfrom.baseinfo.grade" placeholder="请选择所在年级" clearable size="mini">
-                      <el-option v-for="item in gradeOptions" :key="item" :label="item" :value="item"/>
+                  <el-form-item label="职业" class="from-col">
+                    <el-select v-model="postfrom.baseinfo.professional" placeholder="请选择你的职业" clearable size="mini">
+                      <el-option v-for="item in professionalOptions" :key="item" :label="item" :value="item"/>
                     </el-select>
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-row class="from-row">
-                <el-col :span="12">
-                  <el-form-item label="专业">
-                    <el-select v-model="postfrom.baseinfo.major" placeholder="请选择所在专业" clearable size="mini">
-                      <el-option v-for="item in majorOptions" :key="item" :label="item" :value="item"/>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="班级" class="from-col">
-                    <el-select v-model="postfrom.baseinfo.classname" placeholder="请选择你所在的班级" clearable size="mini">
-                      <el-option v-for="item in classnameOptions" :key="item" :label="item" :value="item"/>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
+              <el-row>
+                <el-button :disabled="issubbit" type="primary" size="mini" style="float: right;" @click="beforeSubbit">提交修改</el-button>
               </el-row>
             </el-form>
           </div>
@@ -87,67 +72,6 @@
         <div class="avater">
           <!-- 头像上传组件 -->
           <AvatarUpload :userinfo ="userInfo"/>
-        </div>
-      </el-col>
-    </el-row>
-    <el-row :gutter="10" class="personalinfo-row2">
-      <el-col :span="12" class="personalinfo-col">
-        <div class="Interests">
-          <h4 class="title" style="margin-left: 10px;width: 100px">兴趣爱好</h4>
-          <hr style="FILTER: progid:DXImageTransform.Microsoft.Shadow(color:#987cb9,direction:145,strength:15);" width="90%" color="#987cb9" SIZE="2">
-          <div class="interest" style="margin-left: 50px;margin-top:30px">
-            <div class="interest-1" style="margin-top:30px;margin-bottom: 20px">
-              <p style="font-weight: 550;font-size:14px;margin-bottom: 20px">1.&nbsp;对户外运动、体育运动、健身、徒步等活动。</p>
-              <el-radio v-model="postfrom.interests.outdoorsports" label="非常感兴趣">非常感兴趣</el-radio>
-              <el-radio v-model="postfrom.interests.outdoorsports" label="感兴趣">感兴趣</el-radio>
-              <el-radio v-model="postfrom.interests.outdoorsports" label="一般">一般</el-radio>
-              <el-radio v-model="postfrom.interests.outdoorsports" label="不感兴趣">不感兴趣</el-radio>
-            </div>
-            <div class="interest-2" style="margin-bottom: 20px">
-              <p style="font-weight: 550;font-size:14px;margin-bottom: 20px">2.&nbsp;对艺术（唱歌、跳舞、演奏、绘画、园艺、摄影、创作）。</p>
-              <el-radio v-model="postfrom.interests.talent" label="非常感兴趣">非常感兴趣</el-radio>
-              <el-radio v-model="postfrom.interests.talent" label="感兴趣">感兴趣</el-radio>
-              <el-radio v-model="postfrom.interests.talent" label="一般">一般</el-radio>
-              <el-radio v-model="postfrom.interests.talent" label="不感兴趣">不感兴趣</el-radio>
-            </div>
-            <div class="interest-3" style="margin-bottom: 20px">
-              <p style="font-weight: 550;font-size:14px;margin-bottom: 20px">3.&nbsp;对电子竞技、桌游等。</p>
-              <el-radio v-model="postfrom.interests.esports" label="非常感兴趣">非常感兴趣</el-radio>
-              <el-radio v-model="postfrom.interests.esports" label="感兴趣">感兴趣</el-radio>
-              <el-radio v-model="postfrom.interests.esports" label="一般">一般</el-radio>
-              <el-radio v-model="postfrom.interests.esports" label="不感兴趣">不感兴趣</el-radio>
-            </div>
-          </div>
-        </div>
-      </el-col>
-
-      <el-col :span="11" class="personalinfo-col">
-        <div class="livinghabits">
-          <h4 class="title" style="margin-left: 10px;width: 150px">生活习惯(其他)</h4>
-          <hr style="FILTER: progid:DXImageTransform.Microsoft.Shadow(color:#987cb9,direction:145,strength:15);" width="90%" color="#987cb9" SIZE="2">
-          <el-row class="from-row" style="margin-left: 15px;margin-top: 20px;">
-            <el-col :span="23">
-              <el-form :model="postfrom" label-width="80px" size="mini">
-                <el-form-item label="作息时间">
-                  <el-radio v-model="postfrom.habits.time" label="早睡早起">早睡早起</el-radio>
-                  <el-radio v-model="postfrom.habits.time" label="早睡晚起">早睡晚起</el-radio>
-                  <el-radio v-model="postfrom.habits.time" label="晚睡早起">晚睡早起</el-radio>
-                  <el-radio v-model="postfrom.habits.time" label="晚睡晚起">晚睡晚起</el-radio>
-                </el-form-item>
-              </el-form>
-            </el-col>
-            <el-col :span="23">
-              <el-form :model="postfrom" label-width="80px" size="mini">
-                <el-form-item label="学习意向">
-                  <el-radio v-model="postfrom.habits.learnintent" label="考研"/>
-                  <el-radio v-model="postfrom.habits.learnintent" label="就业"/>
-                  <el-radio v-model="postfrom.habits.learnintent" label="出国"/>
-                  <el-radio v-model="postfrom.habits.learnintent" label="无要求"/>
-                </el-form-item>
-              </el-form>
-            </el-col>
-          </el-row>
-          <el-button :disabled="issubbit" type="primary" size="mini" class="button-change" @click="beforeSubbit">提交修改</el-button>
         </div>
       </el-col>
     </el-row>
@@ -177,7 +101,7 @@
 
 <script>
 import AvatarUpload from './avatarUpload.vue'
-import { SCHOOL_MAP, COLLEGE_MAP, MAJOR_MAP, GRADE_MAP, CLASS_NAME_MAP } from '@/utils/constants'
+import { SCHOOL_MAP, PRO_MAP } from '@/utils/constants'
 import { mapGetters } from 'vuex'
 import { isvalidEmail, isvalidMobile } from '@/utils/validate'
 import { subPersonalInfo } from '@/api/personalinfo'
@@ -197,23 +121,10 @@ export default {
         twopasswd: ''
       },
       postfrom: {
-        interests: {
-          esports: '',
-          outdoorsports: '',
-          talent: ''
-        },
-        habits: {
-          time: '',
-          learnintent: ''
-        },
         baseinfo: {}
       },
+      professionalOptions: [],
       schoolOptions: [],
-      collegeOptions: [],
-      majorOptions: [],
-      gradeOptions: [],
-      habitstimeOptions: [],
-      classnameOptions: [],
       mobile: '',
       email: '',
       rules: {
@@ -239,7 +150,6 @@ export default {
     $route: {
       handler: function(route) {
         this.postfrom.baseinfo = this.userInfo
-        this.postfrom.habits = JSON.parse(this.userInfo.livinghabits)
       },
       immediate: true // 立即执行
     }
@@ -247,16 +157,8 @@ export default {
   created() {
     this.openHint()
     this.schoolOptions = SCHOOL_MAP
-    this.collegeOptions = COLLEGE_MAP
-    this.majorOptions = MAJOR_MAP
-    this.gradeOptions = GRADE_MAP
-    this.classnameOptions = CLASS_NAME_MAP
+    this.professionalOptions = PRO_MAP
     this.postfrom.baseinfo = this.userInfo
-    if (this.userInfo.livinghabits !== null) {
-      this.postfrom.habits = (JSON.parse(this.userInfo.livinghabits))
-    } else {
-      this.postfrom.habits = { 'time': '早睡早起', 'learnintent': '考研' }
-    }
     this.mobile = this.userInfo.mobile
     this.email = this.userInfo.email
   },

@@ -42,9 +42,14 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'index',
-        name: '编辑信息',
+        name: '编辑个人信息',
         component: () => import('@/views/personalinfo/index'),
-        meta: { title: '编辑信息', icon: 'edit1' }
+        meta: { title: '编辑个人信息', icon: 'edit1', roles: ['admin', 'student'] }
+      }, {
+        path: 'admin',
+        name: '编辑信息',
+        component: () => import('@/views/personalinfo/admin'),
+        meta: { title: '编辑信息', icon: 'edit1', roles: ['admin', 'teacher'] }
       }
     ]
   },
