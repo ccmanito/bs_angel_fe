@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { createWorkApply, updateWorkApply } from '@/api/worker'
+import { createWorkApply } from '@/api/worker'
 import { mapGetters } from 'vuex'
 import ApplyDetail from './dormDetail'
 
@@ -86,26 +86,6 @@ export default {
       this.form.major = ''
       this.form.classname = ''
       this.form.remark = ''
-    },
-    // 更新表单
-    updateData() {
-      this.$refs['ApplyDetail'].validate((valid) => {
-        if (valid) {
-          updateWorkApply(this.ticketId, this.form).then(res => {
-            this.$notify({
-              title: '成功',
-              message: '修改工单成功',
-              type: 'success',
-              duration: 2000
-            })
-            this.show = false
-            this.$emit('submit')
-          })
-        } else {
-          console.log('apply Form validation failed.')
-          return false
-        }
-      })
     },
     createApply() {
       this.$refs['ApplyDetail'].validate((valid) => {

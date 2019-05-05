@@ -77,7 +77,7 @@
           align="center"
           width="120">
           <template slot-scope="scope">
-            <router-link :to="'/worker/detail/'+scope.row.id">
+            <router-link :to="'/worker/detail/'+scope.row.id + '/' + scope.row.step_id">
               <el-button type="text" size="small">详情</el-button>
             </router-link>
             &nbsp; &nbsp;
@@ -113,10 +113,10 @@ export default {
     },
     ticketStepIdFilter: (value) => {
       const ticketStepMap = {
-        1: '数据收集',
-        2: '聚类划分',
-        3: '宿舍分配',
-        4: '已完成'
+        0: '数据收集',
+        1: '聚类划分',
+        2: '宿舍分配',
+        3: '已完成'
       }
       return ticketStepMap[value]
     }
@@ -126,7 +126,10 @@ export default {
       loading: false,
       track: false,
       ticketList: [],
-      searchForm: {},
+      searchForm: {
+        school: '',
+        step_id: ''
+      },
       createFormVisible: false,
       ticketStatusMap: {
         1: { title: '申请中', tagType: '' },
@@ -144,7 +147,7 @@ export default {
   },
   methods: {
     handleDelete(index, row) {
-      console.log(index, row)
+      // console.log(index, row)
     },
     handleFilter() {
       const filters = { ...this.searchForm }

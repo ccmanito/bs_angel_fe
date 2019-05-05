@@ -74,7 +74,7 @@ export default {
         create: '新建申请'
       },
       schoolOptions: [],
-      collegeOptions: [],
+      collegeOptions: ['计算机学院', '人文社科学院'],
       majorOptions: [],
       gradeOptions: [],
       classnameOptions: [],
