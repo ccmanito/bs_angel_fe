@@ -41,3 +41,27 @@ export function run_kemans(data) {
     data: data
   })
 }
+
+export function get_sse_picture(params) {
+  return request({
+    url: `worker/perfrom/kemans`,
+    method: 'get',
+    params
+  })
+}
+
+export function create_apply_auth(data) {
+  return request({
+    url: `worker/auth`,
+    method: 'post',
+    data: data
+  })
+}
+
+export function get_auth_apply(params) {
+  return request({
+    url: `worker/auth`,
+    method: 'get',
+    params
+  })
+}

@@ -69,10 +69,16 @@ export const asyncRouterMap = [
         meta: { title: '流程查询', icon: 'workerend', roles: ['admin', 'teacher'] }
       },
       {
-        path: 'auth',
+        path: 'auth/apply',
         name: '权限申请',
-        component: () => import('@/views/worker/auth'),
-        meta: { title: '权限申请', icon: 'applyauth' }
+        component: () => import('@/views/worker/auth/apply'),
+        meta: { title: '权限申请', icon: 'applyauth', roles: ['admin', 'student'] }
+      },
+      {
+        path: 'auth/approval',
+        name: '权限审批',
+        component: () => import('@/views/worker/auth/approval'),
+        meta: { title: '权限审批', icon: 'applyauth', roles: ['admin'] }
       },
       {
         path: 'detail/:id(\\d+)/:step_id(\\d+)',

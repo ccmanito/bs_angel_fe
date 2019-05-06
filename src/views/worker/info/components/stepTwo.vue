@@ -21,67 +21,55 @@
       </el-form>
     </el-card>
     <el-row style="padding: 20px 0px;">
-      <el-col :span="17" >
+      <el-col :span="24" >
         <el-card class="box-card" >
           <div slot="header" class="clearfix">
             <span>聚类设置</span>
           </div>
-          <el-form label-position="left" inline size="mini" label-width="110px" class="from-kemans">
-            <el-form-item label="聚类中心范围:">
-              <el-input
-                v-model="min_cluster_center"
-                style="width:80px"
-                placeholder="最小个数"
-              />
-              <span> &nbsp;-&nbsp;</span>
-              <el-input
-                v-model="max_cluster_center"
-                style="width:80px"
-                placeholder="最多个数"
-              />
+          <el-form label-position="left" inline size="mini" label-width="150px" class="from-kemans">
+            <el-form-item label="获取聚类中心手肘图:">
               <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-              <el-button type="primary" @click="Perform">执行</el-button>
+              <el-button type="primary" @click="Perform">获取</el-button>
             </el-form-item>
           </el-form>
-          <el-row :gutter="20" class="table">
-            <el-col :span="12">
-              <el-table
-                :data="MantableData"
-                empty-text="男生模型  NO DATA"
-                size="mini"
-                style="width: 100%">
-                <el-table-column
-                  prop="cluster_center"
-                  label="中心点"
-                  width="180"/>
-                <el-table-column
-                  prop="score"
-                  label="得分"
-                  width="180"/>
-              </el-table>
-            </el-col>
-            <el-col :span="12">
-              <el-table
-                :data="WomantableData"
-                empty-text="女生模型  NO DATA"
-                size="mini"
-                style="width: 100%">
-                <el-table-column
-                  prop="cluster_center"
-                  label="中心点"
-                  width="180"/>
-                <el-table-column
-                  prop="score"
-                  label="得分"
-                  width="180"/>
-              </el-table>
-            </el-col>
-          </el-row>
-        </el-card>
+          <div v-loading="loading" v-show="show_img" class="imge-list">
+            <el-row :gutter="2">
+              <el-col :span="12">
+                <div>
+                  <img :src="src_man" style="width: 450px; height: 300px">
+                </div>
+              </el-col>
+              <el-col :span="12">
+                <div>
+                  <img :src="src_woman" style="width: 450px; height: 300px">
+                </div>
+              </el-col>
+            </el-row>
+          </div>
+          <div class="operation" style="width: 100%; height: 300px; margin-top: 50px">
+            <!-- <h5 class="title" style="margin-left: 10px;width: 150px">操作</h5> -->
+            <hr style="FILTER: progid:DXImageTransform.Microsoft.Shadow(color:#987cb9,direction:145,strength:15);" width="98%" color="#987cb9" SIZE="2">
+            <el-tag style="margin-left: 20px;margin-top: 10px" type="success">提示： 根据上面的手肘图我们可以知道拐点的K为多少，这个拐点对应的k是最佳的,但是根据实际情况可以选择拐点附近的K值，作为算法调用的聚类中心个数</el-tag>
 
+            <el-form label-position="left" inline size="mini" label-width="80px" class="from_k" style="margin-top: 50px">
+              <el-form-item label="男生模型:">
+                <el-input v-model="man_k" placeholder="K 的值" style="width:80px"/>
+              </el-form-item>
+              <el-form-item label="女生模型:">
+                <el-input v-model="woman_k" placeholder="K 的值" style="width:80px"/>
+              </el-form-item>
+              <el-form-item>
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <!-- <el-button :disabled="!show_img" type="primary" @click="Runkemans">执行</el-button> -->
+                <el-button type="primary" @click="Runkemans">执行</el-button>
+                <el-button v-show="show_next_button" type="primary" @click="Subbit">下一步</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-card>
       </el-col>
 
-      <el-col :span="6" :offset="1">
+      <!-- <el-col :span="6" :offset="1">
         <el-row>
           <el-card class="box-card">
             <div slot="header" class="clearfix">
@@ -97,13 +85,13 @@
             </el-form>
           </el-card>
         </el-row>
-      </el-col>
+      </el-col> -->
     </el-row>
   </div>
 </template>
 
 <script>
-import { getWorkerDetail, changeSetp, run_kemans } from '@/api/worker'
+import { getWorkerDetail, changeSetp, get_sse_picture, run_kemans } from '@/api/worker'
 import ApplyDetail from './dormDetail'
 
 export default {
@@ -112,8 +100,13 @@ export default {
   },
   data() {
     return {
-      min_cluster_center: 2,
-      max_cluster_center: 10,
+      man_k: '',
+      woman_k: '',
+      show_next_button: false,
+      show_img: false,
+      loading: false,
+      src_man: '',
+      src_woman: '',
       is_button: true,
       step_id: 0,
       id: 0,
@@ -142,17 +135,39 @@ export default {
       const params = {}
       params.id = this.id
       params.step_id = 2
-      changeSetp().then(res => {
+      changeSetp(params).then(res => {
         this.$router.push({ path: '/worker/detail/' + this.id + '/2' })
       })
     },
     Perform() {
       const params = {}
-      params.min_cluster_center = this.min_cluster_center
-      params.max_cluster_center = this.max_cluster_center
       params.id = this.id
+      this.loading = true
+      this.show_img = true
+      get_sse_picture(params).then(res => {
+        this.loading = false
+        this.src_man = res.data.man
+        this.src_woman = res.data.woman
+      }).catch(() => {
+        this.loading = false
+        this.show_img = false
+      })
+    },
+    Runkemans() {
+      const params = {}
+      params.id = this.id
+      params.man_k = this.man_k
+      params.woman_k = this.woman_k
       run_kemans(params).then(res => {
-        console.log(res)
+        this.show_next_button = true
+        this.$notify({
+          title: '成功',
+          message: '聚类成功，可点击下一步到人性化宿舍分配',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch(() => {
+        //
       })
     }
   }
