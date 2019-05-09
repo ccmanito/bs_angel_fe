@@ -57,7 +57,8 @@
           align="center"
           width="90">
           <template slot-scope="scope">
-            <el-tag :type="scope.row.step_id == 1?'primary':(scope.row.step_id == 3?'warning':'info')" size="mini">{{ scope.row.step_id | ticketStepIdFilter }}</el-tag>
+            <el-tag :type="ticketstepMap[scope.row.step_id ].tagType" size="mini">{{ ticketstepMap[scope.row.step_id ].title }}</el-tag>
+            <!-- <el-tag :type="scope.row.step_id == 1?'primary':(scope.row.step_id == 3?'warning':'info')" size="mini">{{ scope.row.step_id | ticketStepIdFilter }}</el-tag> -->
           </template>
         </el-table-column>
         <el-table-column
@@ -90,7 +91,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <apply-dialog :visible.sync="createFormVisible" @submit="ApplySubmit"/>
+    <apply-dialog ref="dormapply" :visible.sync="createFormVisible" @submit="ApplySubmit"/>
   </div>
 </template>
 
@@ -110,15 +111,6 @@ export default {
       } else {
         return '#67C23A'
       }
-    },
-    ticketStepIdFilter: (value) => {
-      const ticketStepMap = {
-        0: '数据收集',
-        1: '聚类划分',
-        2: '宿舍分配',
-        3: '已完成'
-      }
-      return ticketStepMap[value]
     }
   },
   data() {
@@ -134,6 +126,12 @@ export default {
       ticketStatusMap: {
         1: { title: '申请中', tagType: '' },
         2: { title: '操作完成', tagType: 'success' }
+      },
+      ticketstepMap: {
+        0: { title: '数据收集', tagType: 'info' },
+        1: { title: '聚类划分', tagType: '' },
+        2: { title: '宿舍分配', tagType: 'warning' },
+        3: { title: '已完成', tagType: 'success' }
       }
     }
   },
@@ -154,6 +152,7 @@ export default {
       this.fetchData({ token: this.userInfo.token, filters: JSON.stringify(filters) })
     },
     handleApply(msg) {
+      this.$refs.dormapply.getschoolinfo()
       this.createFormVisible = true
     },
     fetchData(params) {

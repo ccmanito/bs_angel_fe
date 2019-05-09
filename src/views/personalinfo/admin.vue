@@ -101,10 +101,11 @@
 
 <script>
 import AvatarUpload from './avatarUpload.vue'
-import { SCHOOL_MAP, PRO_MAP } from '@/utils/constants'
+import { PRO_MAP } from '@/utils/constants'
 import { mapGetters } from 'vuex'
 import { isvalidEmail, isvalidMobile } from '@/utils/validate'
 import { subPersonalInfo } from '@/api/personalinfo'
+import { getSchoolInfo } from '@/api/system'
 
 export default {
   name: 'Personal',
@@ -156,13 +157,20 @@ export default {
   },
   created() {
     this.openHint()
-    this.schoolOptions = SCHOOL_MAP
+    this.getschoollist()
     this.professionalOptions = PRO_MAP
     this.postfrom.baseinfo = this.userInfo
     this.mobile = this.userInfo.mobile
     this.email = this.userInfo.email
   },
   methods: {
+    getschoollist() {
+      const params = {}
+      params.key = 'schoollist'
+      getSchoolInfo(params).then(res => {
+        this.schoolOptions = res.data
+      })
+    },
     openHint() {
       this.$notify.info({
         title: '温馨提示',

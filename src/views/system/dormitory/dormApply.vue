@@ -1,6 +1,6 @@
 <template>
-  <el-dialog :title="textMap[dialogStatus]" :visible="show" width="600px" top="2%" @close="$emit('update:visible', false)">
-    <ApplyDetail ref="ApplyDetail" :form="form" :posit="true" :schoolinfo="schoolinfo" style="margin:0px 90px 0px 40px;"/>
+  <el-dialog :title="textMap[dialogStatus]" :visible="show" width="500px" top="6%" @close="$emit('update:visible', false)">
+    <ApplyDetail ref="ApplyDetail" :form="form" :posit="true" style="margin:0px 90px 0px 40px;"/>
     <div slot="footer" class="dialog-footer">
       <el-button size="mini" @click="$emit('update:visible', false)">取消</el-button>
       <el-button size="mini" type="primary" @click="dialogStatus==='create'?createApply():updateData()">确认</el-button>
@@ -9,8 +9,7 @@
 </template>
 
 <script>
-import { createWorkApply } from '@/api/worker'
-import { getSchoolInfo } from '@/api/system'
+import { createWorkApply } from '@/api/system'
 import { mapGetters } from 'vuex'
 import ApplyDetail from './dormDetail'
 
@@ -24,14 +23,11 @@ export default {
       type: Object,
       default() {
         return {
-          keyword: '',
-          endtime: '',
-          school: '西安邮电大学',
-          college: ['计算机学院'],
-          major: '',
-          grade: ['2015'],
-          classname: '',
-          remark: '' // 申请原因
+          address: '',
+          floor: '',
+          dorm_id: '',
+          remark: '', // 申请原因
+          dorm_size: ''
         }
       }
     },
@@ -53,10 +49,9 @@ export default {
   data() {
     return {
       show: this.visible,
-      schoolinfo: {},
       textMap: {
-        update: '修改申请',
-        create: '新建申请'
+        update: '修改修改',
+        create: '宿舍录入'
       }
     }
   },
@@ -81,30 +76,21 @@ export default {
   },
   methods: {
     resetForm() {
-      this.form.keyword = ''
-      this.form.school = ''
-      this.form.endtime = new Date()
-      this.form.college = ''
-      this.form.major = ''
-      this.form.classname = ''
+      this.form.address = ''
+      this.form.floor = ''
+      this.form.dorm_id = ''
       this.form.remark = ''
-    },
-    getschoolinfo() {
-      const params = {}
-      params.key = 'comm'
-      params.school = this.userInfo.school
-      getSchoolInfo(params).then(res => {
-        this.schoolinfo = res.data
-      })
+      this.form.dorm_size = ''
     },
     createApply() {
       this.$refs['ApplyDetail'].validate((valid) => {
         if (valid) {
           const data = {
-            description: '新建宿舍分配申请',
-            form_data: JSON.stringify(this.form),
+            dorm_size: this.form.dorm_size,
+            address: this.form.address,
+            floor: this.form.floor,
+            dorm_id: this.form.dorm_id,
             userinfo: this.userInfo,
-            endtime: this.form.endtime.getTime(),
             remark: this.form.remark
           }
           createWorkApply(data).then(res => {

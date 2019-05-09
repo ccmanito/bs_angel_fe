@@ -50,14 +50,14 @@
               <el-row class="from-row">
                 <el-col :span="12">
                   <el-form-item label="学院">
-                    <el-select v-model="postfrom.baseinfo.college" placeholder="请选择所在学院" clearable size="mini">
+                    <el-select v-model="postfrom.baseinfo.college" no-data-text="请先选择学校" placeholder="请选择所在学院" clearable size="mini">
                       <el-option v-for="item in collegeOptions" :key="item" :label="item" :value="item"/>
                     </el-select>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="年级" class="from-col">
-                    <el-select v-model="postfrom.baseinfo.grade" placeholder="请选择所在年级" clearable size="mini">
+                    <el-select v-model="postfrom.baseinfo.grade" no-data-text="请先选择学校" placeholder="请选择所在年级" clearable size="mini">
                       <el-option v-for="item in gradeOptions" :key="item" :label="item" :value="item"/>
                     </el-select>
                   </el-form-item>
@@ -66,14 +66,14 @@
               <el-row class="from-row">
                 <el-col :span="12">
                   <el-form-item label="专业">
-                    <el-select v-model="postfrom.baseinfo.major" placeholder="请选择所在专业" clearable size="mini">
+                    <el-select v-model="postfrom.baseinfo.major" no-data-text="请先选择学校" placeholder="请选择所在专业" clearable size="mini">
                       <el-option v-for="item in majorOptions" :key="item" :label="item" :value="item"/>
                     </el-select>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
                   <el-form-item label="班级" class="from-col">
-                    <el-select v-model="postfrom.baseinfo.classname" placeholder="请选择你所在的班级" clearable size="mini">
+                    <el-select v-model="postfrom.baseinfo.classname" no-data-text="请先选择学校" placeholder="请选择你所在的班级" clearable size="mini">
                       <el-option v-for="item in classnameOptions" :key="item" :label="item" :value="item"/>
                     </el-select>
                   </el-form-item>
@@ -177,10 +177,10 @@
 
 <script>
 import AvatarUpload from './avatarUpload.vue'
-import { SCHOOL_MAP, COLLEGE_MAP, MAJOR_MAP, GRADE_MAP, CLASS_NAME_MAP } from '@/utils/constants'
 import { mapGetters } from 'vuex'
 import { isvalidEmail, isvalidMobile } from '@/utils/validate'
 import { subPersonalInfo } from '@/api/personalinfo'
+import { getSchoolInfo } from '@/api/system'
 
 export default {
   name: 'Personal',
@@ -214,6 +214,7 @@ export default {
       gradeOptions: [],
       habitstimeOptions: [],
       classnameOptions: [],
+      schoolinfo: {},
       mobile: '',
       email: '',
       rules: {
@@ -242,15 +243,17 @@ export default {
         this.postfrom.habits = JSON.parse(this.userInfo.livinghabits)
       },
       immediate: true // 立即执行
+    },
+    'postfrom.baseinfo.school': {
+      handler: function(newvalues, oidvalues) {
+        // 执行切换操作
+        this.getschoolinfo(newvalues)
+      }
     }
   },
   created() {
     this.openHint()
-    this.schoolOptions = SCHOOL_MAP
-    this.collegeOptions = COLLEGE_MAP
-    this.majorOptions = MAJOR_MAP
-    this.gradeOptions = GRADE_MAP
-    this.classnameOptions = CLASS_NAME_MAP
+    this.getschoollist()
     this.postfrom.baseinfo = this.userInfo
     if (this.userInfo.livinghabits !== null) {
       this.postfrom.habits = (JSON.parse(this.userInfo.livinghabits))
@@ -261,6 +264,25 @@ export default {
     this.email = this.userInfo.email
   },
   methods: {
+    getschoollist() {
+      const params = {}
+      params.key = 'schoollist'
+      getSchoolInfo(params).then(res => {
+        this.schoolOptions = res.data
+      })
+    },
+    getschoolinfo(msg) {
+      const params = {}
+      params.key = 'comm'
+      params.school = msg
+      getSchoolInfo(params).then(res => {
+        this.schoolinfo = res.data
+        this.collegeOptions = res.data.college
+        this.majorOptions = res.data.major
+        this.gradeOptions = res.data.grade
+        this.classnameOptions = res.data.classname
+      })
+    },
     openHint() {
       this.$notify.info({
         title: '温馨提示',
@@ -289,7 +311,6 @@ export default {
     },
     subbit(msg) { // 提交修改
       // json 格式处理
-      console.log(msg)
       const data = {}
       data.passwordlist = msg
       data.interests = JSON.stringify(this.postfrom.interests)

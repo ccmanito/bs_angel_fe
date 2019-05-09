@@ -14,7 +14,7 @@
               <span v-if="roles.includes('techer')" style="color:#409EFF">管理员</span>
               <el-tag v-if="roles.includes('admin')" size= "mini" type="success" style="margin-left: 30px">提示：您已是最高权限用户</el-tag>
             </el-form-item>
-            <el-form-item label="申请状态：">
+            <el-form-item v-if="!roles.includes('admin')" label="申请状态：">
               <el-tag :type="ticketStatusMap[status_id].tagType" size="mini">{{ ticketStatusMap[status_id ].title }}</el-tag>
             </el-form-item>
           </el-form>

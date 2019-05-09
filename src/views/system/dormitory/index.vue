@@ -1,7 +1,11 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="searchForm.school" clearable size="mini" placeholder="学校模糊查询" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter"/>
+      <el-input v-model="searchForm.floor" clearable size="mini" placeholder="楼层模糊查询" style="width: 150px;" class="filter-item" @keyup.enter.native="handleFilter"/>
+      <el-select v-model="searchForm.status" size="mini" placeholder="分配状态" clearable class="filter-item" style="width: 160px">
+        <el-option label="待分配" value="0"/>
+        <el-option label="已分配" value="1"/>
+      </el-select>
       <el-button size="mini" class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>
     <el-button size="mini" class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleApply()">录入</el-button>    </div>
 
@@ -18,29 +22,45 @@
           align="center"
           width="50"/>
         <el-table-column
-          prop="school"
-          label="学校"
+          prop="status"
+          label="分配状态"
           align="center"
-          width="120"/>
+          width="70">
+          <template slot-scope="scope">
+            <el-tag :type="ticketStatusMap[scope.row.status].tagType" size="mini">{{ ticketStatusMap[scope.row.status].title }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="college"
-          label="学院"
+          prop="address"
+          label="地址"
           align="center"
+          width="80"
         />
         <el-table-column
-          prop="major"
-          label="专业"
+          prop="floor"
+          label="楼层"
           align="center"/>
         <el-table-column
-          prop="grade"
-          label="年级"
+          prop="dorm_id"
+          label="房间号"
+          align="center"
+          width="70"
+        />
+        <el-table-column
+          prop="dorm_size"
+          label="房间容量"
+          align="center"
+          width="70"
+        />
+        <el-table-column
+          prop="residents"
+          label="住户信息"
           align="center"
         />
         <el-table-column
-          prop="classname"
-          label="班级"
-          align="center"
-        />
+          prop="in_date"
+          label="入住时间"
+          align="center"/>
         <el-table-column
           label="操作"
           align="center"
@@ -49,8 +69,8 @@
             <el-button
               type="text"
               size="mini"
-              @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            &nbsp;
+              @click="handleEdit(scope.$index, scope.row)">清空</el-button>
+            &nbsp; &nbsp;
             <el-button
               size="mini"
               type="text"
@@ -72,14 +92,13 @@
       </div>
     </div>
     <DormApply :visible.sync="createFormVisible" @submit="ApplySubmit"/>
-    <DormApply :form="schoolInfo" :ticket-id="ticketId" :visible.sync="updateFormVisible" dialog-status="update" @submit="ApplySubmit"/>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import { getSchoolList, DeleteSchool, getSchoolInfo } from '@/api/system'
-import DormApply from './schoolApply'
+import { getDormList, EmptyDorm, DeleteDorm } from '@/api/system'
+import DormApply from './dormApply'
 
 export default {
   components: {
@@ -91,18 +110,20 @@ export default {
     return {
       total_num: 0,
       page: 1,
-      pageSize: 8,
+      pageSize: 10,
       pageSizes: [10, 15, 20, 25, 30, 50, 100],
       loading: false,
       tempdata: [],
       ticketList: [],
-      ticketId: 0,
-      schoolInfo: {},
       searchForm: {
-        school: ''
+        status: '',
+        floor: ''
       },
       createFormVisible: false,
-      updateFormVisible: false
+      ticketStatusMap: {
+        0: { title: '未分配', tagType: '' },
+        1: { title: '已分配', tagType: 'success' }
+      }
     }
   },
   computed: {
@@ -117,17 +138,14 @@ export default {
     handleEdit(index, row) {
       const params = {}
       params.id = row.id
-      params.key = 'single'
-      getSchoolInfo(params).then(res => {
-        this.schoolInfo = res.data
-        this.ticketId = row.id
-        this.updateFormVisible = true
+      EmptyDorm(params).then(res => {
+        this.fetchData()
       })
     },
     handleDelete(index, row) {
       const params = {}
       params.id = row.id
-      DeleteSchool(params).then(res => {
+      DeleteDorm(params).then(res => {
         this.fetchData()
       })
     },
@@ -151,8 +169,8 @@ export default {
     fetchData(params) {
       this.loading = true
       this.ticketList = []
-      params = { key: 'list', token: this.userInfo.token, ...params }
-      getSchoolList(params).then(res => {
+      params = { token: this.userInfo.token, ...params }
+      getDormList(params).then(res => {
         this.total_num = res.data.totalNum
         this.ticketList = res.data.data
         this.loading = false

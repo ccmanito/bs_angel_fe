@@ -30,7 +30,7 @@ export function changeSetp(params) {
   return request({
     url: `worker/detail`,
     method: 'put',
-    params
+    data: params
   })
 }
 

@@ -101,9 +101,15 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'info',
-        name: '系统信息',
+        name: '学校信息',
         component: () => import('@/views/system/info'),
-        meta: { title: '系统信息', icon: 'edit', roles: ['admin', 'teacher'] }
+        meta: { title: '学校信息', icon: 'edit', roles: ['admin', 'teacher'] }
+      },
+      {
+        path: 'dorm/info',
+        name: '宿舍信息管理',
+        component: () => import('@/views/system/dormitory'),
+        meta: { title: '宿舍信息', icon: 'edit', roles: ['admin', 'teacher'] }
       }
     ]
   },

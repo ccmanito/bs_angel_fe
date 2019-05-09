@@ -15,27 +15,27 @@
     </el-form-item>
     <el-form-item label="学校" prop="school">
       <el-select v-model="form.school" placeholder="请选择所在学校" clearable style="width: 95%;">
-        <el-option v-for="item in schoolOptions" :key="item" :label="item" :value="item"/>
+        <el-option v-for="item in schoolinfo.school" :key="item" :label="item" :value="item"/>
       </el-select>
     </el-form-item>
     <el-form-item label="年级" prop="grade">
       <el-select v-model="form.grade" placeholder="可选项（支持多选）、为空代表不以年级为单位" multiple clearable style="width: 95%;">
-        <el-option v-for="item in gradeOptions" :key="item" :label="item" :value="item"/>
+        <el-option v-for="item in schoolinfo.grade" :key="item" :label="item" :value="item"/>
       </el-select>
     </el-form-item>
     <el-form-item label="学院" prop="college">
       <el-select v-model="form.college" placeholder="可选项（支持多选）、为空代表不以学院为单位" multiple clearable style="width: 95%;">
-        <el-option v-for="item in collegeOptions" :key="item" :label="item" :value="item"/>
+        <el-option v-for="item in schoolinfo.college" :key="item" :label="item" :value="item"/>
       </el-select>
     </el-form-item>
     <el-form-item label="专业" prop="major">
       <el-select v-model="form.major" placeholder="可选项（支持多选）、为空代表不以年级为单位" multiple clearable style="width: 95%;">
-        <el-option v-for="item in majorOptions" :key="item" :label="item" :value="item"/>
+        <el-option v-for="item in schoolinfo.major" :key="item" :label="item" :value="item"/>
       </el-select>
     </el-form-item>
     <el-form-item label="班级" prop="classname">
       <el-select v-model="form.classname" placeholder="可选项（支持多选）、为空代表不以年级为单位" multiple clearable style="width: 95%;">
-        <el-option v-for="item in classnameOptions" :key="item" :label="item" :value="item"/>
+        <el-option v-for="item in schoolinfo.classname" :key="item" :label="item" :value="item"/>
       </el-select>
     </el-form-item>
     <el-form-item label="分配备注" prop="remark">
@@ -62,6 +62,11 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    schoolinfo: {
+      type: Object,
+      required: true,
+      default: () => {}
     }
   },
   data() {
@@ -74,7 +79,7 @@ export default {
         create: '新建申请'
       },
       schoolOptions: [],
-      collegeOptions: ['计算机学院', '人文社科学院'],
+      collegeOptions: [],
       majorOptions: [],
       gradeOptions: [],
       classnameOptions: [],
@@ -120,8 +125,6 @@ export default {
     ])
   },
   created() {
-    this.schoolOptions.push(this.userInfo.schoolinfo.school)
-    // this.collegeOptions = this.userInfo.schoolinfo.college
   },
   methods: {
     // region单选框改变时间

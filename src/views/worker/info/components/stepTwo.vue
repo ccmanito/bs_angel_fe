@@ -46,17 +46,17 @@
               </el-col>
             </el-row>
           </div>
-          <div class="operation" style="width: 100%; height: 300px; margin-top: 50px">
+          <div class="operation" style="width: 100%; margin-top: 50px">
             <!-- <h5 class="title" style="margin-left: 10px;width: 150px">操作</h5> -->
             <hr style="FILTER: progid:DXImageTransform.Microsoft.Shadow(color:#987cb9,direction:145,strength:15);" width="98%" color="#987cb9" SIZE="2">
             <el-tag style="margin-left: 20px;margin-top: 10px" type="success">提示： 根据上面的手肘图我们可以知道拐点的K为多少，这个拐点对应的k是最佳的,但是根据实际情况可以选择拐点附近的K值，作为算法调用的聚类中心个数</el-tag>
 
             <el-form label-position="left" inline size="mini" label-width="80px" class="from_k" style="margin-top: 50px">
               <el-form-item label="男生模型:">
-                <el-input v-model="man_k" placeholder="K 的值" style="width:80px"/>
+                <el-input v-model="man_k" placeholder="上图拐点 K 的值" style="width:120px"/>
               </el-form-item>
               <el-form-item label="女生模型:">
-                <el-input v-model="woman_k" placeholder="K 的值" style="width:80px"/>
+                <el-input v-model="woman_k" placeholder="上图拐点 K 的值" style="width:120px"/>
               </el-form-item>
               <el-form-item>
                 <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -66,26 +66,46 @@
               </el-form-item>
             </el-form>
           </div>
+          <div v-if="show_next_button" class="kmeans-data">
+            <el-row :gutter="20" class="kmeans-data" style="margin-top: 30px;">
+              <el-col :span="12">
+                <el-row>
+                  <el-col :span="24">
+                    <el-form label-position="left" inline size="mini" label-width="90px" class="from-kemans">
+                      <el-form-item label="迭代次数:">
+                        <span style="color: #67C23A"> {{ ManData.iterations }}</span>
+                      </el-form-item>
+                      <el-form-item label="误差平方和:">
+                        <span style="color: #409EFF"> {{ ManData.inertia }}</span>
+                      </el-form-item>
+                    </el-form>
+                  </el-col>
+                  <el-col :span="24">
+                    <AllotDetail :tag-data="ManData.tag_man_list"/>
+                  </el-col>
+                </el-row>
+              </el-col>
+              <el-col :span="12">
+                <el-row>
+                  <el-col :span="24">
+                    <el-form label-position="left" inline size="mini" label-width="90px" class="from-kemans">
+                      <el-form-item label="迭代次数:">
+                        <span style="color: #67C23A"> {{ WomanData.iterations }}</span>
+                      </el-form-item>
+                      <el-form-item label="误差平方和:">
+                        <span style="color: #409EFF"> {{ WomanData.inertia }}</span>
+                      </el-form-item>
+                    </el-form>
+                  </el-col>
+                  <el-col :span="24">
+                    <AllotDetail :tag-data="WomanData.tag_woman_list"/>
+                  </el-col>
+                </el-row>
+              </el-col>
+            </el-row>
+          </div>
         </el-card>
       </el-col>
-
-      <!-- <el-col :span="6" :offset="1">
-        <el-row>
-          <el-card class="box-card">
-            <div slot="header" class="clearfix">
-              <span>操作</span>
-            </div>
-            <el-form label-position="left" size="mini" label-width="100px" >
-              <span v-if="ticketDetail.countdown === '已关闭'">数据收集完成，可进行下一步</span>
-              <span v-if="ticketDetail.countdown !== '已关闭'">数据收集进行中</span>
-              <p/>
-              <el-form-item label="操作">
-                <el-button :disabled="is_button" type="success" @click="Subbit">下一步</el-button>
-              </el-form-item>
-            </el-form>
-          </el-card>
-        </el-row>
-      </el-col> -->
     </el-row>
   </div>
 </template>
@@ -93,10 +113,12 @@
 <script>
 import { getWorkerDetail, changeSetp, get_sse_picture, run_kemans } from '@/api/worker'
 import ApplyDetail from './dormDetail'
+import AllotDetail from './allotDetail'
 
 export default {
   components: {
-    ApplyDetail
+    ApplyDetail,
+    AllotDetail
   },
   data() {
     return {
@@ -111,8 +133,9 @@ export default {
       step_id: 0,
       id: 0,
       ticketDetail: {},
-      WomantableData: [{ 'cluster_center': 3, 'score': 34 }],
-      MantableData: []
+      WomanData: {},
+      ManData: {},
+      kemans_data: ''
     }
   },
   computed: {
@@ -135,6 +158,7 @@ export default {
       const params = {}
       params.id = this.id
       params.step_id = 2
+      params.kemans_data = JSON.stringify(this.kemans_data)
       changeSetp(params).then(res => {
         this.$router.push({ path: '/worker/detail/' + this.id + '/2' })
       })
@@ -159,6 +183,10 @@ export default {
       params.man_k = this.man_k
       params.woman_k = this.woman_k
       run_kemans(params).then(res => {
+        // console.log(res)
+        this.kemans_data = res.data
+        this.ManData = res.data[0]
+        this.WomanData = res.data[1]
         this.show_next_button = true
         this.$notify({
           title: '成功',

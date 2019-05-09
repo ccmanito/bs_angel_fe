@@ -67,18 +67,18 @@
         <el-table-column
           label="操作"
           align="center"
-          width="120">
+          width="100">
           <template slot-scope="scope">
             <el-button
               size="mini"
               type="text"
-              style="color: red"
+              style="color: #409EFF"
               @click="handleDelete(scope.$index, scope.row)">通过</el-button>
             &nbsp; &nbsp;
             <el-button
               size="mini"
               type="text"
-              style="color: red"
+              style="color: #F56C6C"
               @click="handleDelete(scope.$index, scope.row)">驳回</el-button>
           </template>
         </el-table-column>
@@ -104,10 +104,8 @@ export default {
     },
     ticketStepIdFilter: (value) => {
       const ticketStepMap = {
-        0: '数据收集',
-        1: '聚类划分',
-        2: '宿舍分配',
-        3: '已完成'
+        0: '新申请',
+        1: '已完成'
       }
       return ticketStepMap[value]
     }
