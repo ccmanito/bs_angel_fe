@@ -36,7 +36,7 @@ export const asyncRouterMap = [
     component: Layout,
     alwaysShow: true,
     meta: {
-      title: '信息管理',
+      title: '个人信息管理',
       icon: 'user1'
     },
     children: [
@@ -72,7 +72,14 @@ export const asyncRouterMap = [
         path: 'auth/apply',
         name: '权限申请',
         component: () => import('@/views/worker/auth/apply'),
-        meta: { title: '权限申请', icon: 'applyauth', roles: ['admin', 'student'] }
+        meta: { title: '权限申请', icon: 'applyauth' }
+      },
+      {
+        path: 'auth/empty',
+        name: '空白页',
+        component: () => import('@/views/worker/auth/emptypage'),
+        meta: { title: 'empty' },
+        hidden: true
       },
       {
         path: 'auth/approval',
@@ -110,6 +117,12 @@ export const asyncRouterMap = [
         name: '宿舍信息管理',
         component: () => import('@/views/system/dormitory'),
         meta: { title: '宿舍信息', icon: 'edit', roles: ['admin', 'teacher'] }
+      },
+      {
+        path: 'user/list',
+        name: '用户信息管理',
+        component: () => import('@/views/system/userinfo'),
+        meta: { title: '用户信息', icon: 'edit', roles: ['admin', 'teacher'] }
       }
     ]
   },

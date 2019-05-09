@@ -7,15 +7,15 @@
       <el-row :gutter="20">
         <el-col :span="14">
           <el-form label-position="left" inline label-width="100px" class="table-form-expand">
-
             <el-form-item label="当前权限：">
               <span v-if="roles.includes('student')" style="color:#409EFF">普通用户</span>
               <span v-if="roles.includes('admin')" style="color:#409EFF">超级管理员</span>
-              <span v-if="roles.includes('techer')" style="color:#409EFF">管理员</span>
+              <span v-if="roles.includes('teacher')" style="color:#409EFF">管理员</span>
               <el-tag v-if="roles.includes('admin')" size= "mini" type="success" style="margin-left: 30px">提示：您已是最高权限用户</el-tag>
             </el-form-item>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <el-form-item v-if="!roles.includes('admin')" label="申请状态：">
-              <el-tag :type="ticketStatusMap[status_id].tagType" size="mini">{{ ticketStatusMap[status_id ].title }}</el-tag>
+              <el-tag :type="ticketStatusMap[status_id].tagType" size="mini">{{ ticketStatusMap[status_id].title }}</el-tag>
             </el-form-item>
           </el-form>
           <div v-show="!roles.includes('admin')" class="apply-from">
@@ -37,7 +37,7 @@
                 <el-input :autosize="{ minRows: 3, maxRows: 4}" v-model="form.remark" type="textarea" placeholder="请填写详细的申请原因及用途" style="width: 300px;"/>
               </el-form-item>
               <el-form-item>
-                <el-button size="mini" icon="el-icon-edit" style="margin-left: 220px" type="primary" @click="Subbit">申请</el-button>
+                <el-button size="mini" icon="el-icon-edit" style="margin-left: 220px" type="primary" @click="Subbit('form')">申请</el-button>
               </el-form-item>
             </el-form>
           </div>
@@ -66,7 +66,7 @@ export default {
   data() {
     return {
       step: 0,
-      status_id: 1,
+      status_id: 3,
       form: {
         name: '',
         school: '',
@@ -78,21 +78,22 @@ export default {
           { required: true, message: '请输入姓名', trigger: 'blur' }
         ],
         school: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' }
+          { required: true, message: '请输入你所在单位', trigger: 'blur' }
         ],
         remark: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' }
+          { required: true, message: '请输入申请缘由', trigger: 'blur' }
         ],
         professional: [
-          { required: true, message: '请输入活动名称', trigger: 'blur' }
+          { required: true, message: '请输入你的职业', trigger: 'blur' }
         ]
       },
       ticketList: [],
       ticketStatusMap: {
         0: { title: '申请中', tagType: 'success' },
-        1: { title: '无', tagType: 'info' },
+        1: { title: '已完成', tagType: 'warning' },
         2: { title: '驳回', tagType: 'danger' },
-        3: { title: '已完成', tagType: 'warning' }
+        3: { title: '无', tagType: 'info' }
+
       }
     }
   },
@@ -116,24 +117,31 @@ export default {
         this.status_id = res.data.status_id
       })
     },
-    Subbit() {
-      const params = {}
-      params.proposer_name = this.form.name
-      params.professional = this.form.professional
-      params.school = this.form.school
-      params.remark = this.form.remark
-      params.step = 1
-      params.status_id = 0
-      params.proposer = this.userInfo.token
-      create_apply_auth(params).then(res => {
-        this.step = 1
-        console.log()
-        this.$notify({
-          title: '成功',
-          message: '申请成功，等待管理员审核',
-          type: 'success',
-          duration: 2000
-        })
+    Subbit(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          const params = {}
+          params.proposer_name = this.form.name
+          params.professional = this.form.professional
+          params.school = this.form.school
+          params.remark = this.form.remark
+          params.step = 1
+          params.status_id = 0
+          params.proposer = this.userInfo.token
+          create_apply_auth(params).then(res => {
+            this.step = 1
+            this.$router.push({ path: '/worker/auth/empty' })
+            this.$notify({
+              title: '成功',
+              message: '申请成功，等待管理员审核',
+              type: 'success',
+              duration: 2000
+            })
+          })
+        } else {
+          console.log('error submit!!')
+          return false
+        }
       })
     }
   }

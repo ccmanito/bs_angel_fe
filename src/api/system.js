@@ -78,3 +78,19 @@ export function DeleteSchool(params) {
     params
   })
 }
+
+export function getUserList(params) {
+  return request({
+    url: `sys/user/list`,
+    method: 'get',
+    params
+  })
+}
+
+export function DeleteUser(params) {
+  return request({
+    url: `sys/user/list`,
+    method: 'delete',
+    params
+  })
+}

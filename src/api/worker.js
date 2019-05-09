@@ -50,6 +50,7 @@ export function get_sse_picture(params) {
   })
 }
 
+// 申请权限
 export function create_apply_auth(data) {
   return request({
     url: `worker/auth`,
@@ -57,11 +58,20 @@ export function create_apply_auth(data) {
     data: data
   })
 }
-
+// 获取权限列表
 export function get_auth_apply(params) {
   return request({
     url: `worker/auth`,
     method: 'get',
     params
+  })
+}
+
+// 更改权限列表
+export function editauth(params) {
+  return request({
+    url: `worker/auth`,
+    method: 'put',
+    data: params
   })
 }
