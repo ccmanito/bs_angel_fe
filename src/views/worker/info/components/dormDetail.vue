@@ -14,9 +14,7 @@
         default-time="12:00:00"/>
     </el-form-item>
     <el-form-item label="学校" prop="school">
-      <el-select v-model="form.school" placeholder="请选择所在学校" clearable style="width: 95%;">
-        <el-option v-for="item in schoolinfo.school" :key="item" :label="item" :value="item"/>
-      </el-select>
+      <el-input v-model="form.school" disabled style="width: 95%;"/>
     </el-form-item>
     <el-form-item label="年级" prop="grade">
       <el-select v-model="form.grade" placeholder="可选项（支持多选）、为空代表不以年级为单位" multiple clearable style="width: 95%;">
@@ -65,7 +63,6 @@ export default {
     },
     schoolinfo: {
       type: Object,
-      required: true,
       default: () => {}
     }
   },
@@ -78,11 +75,6 @@ export default {
         update: '修改申请',
         create: '新建申请'
       },
-      schoolOptions: [],
-      collegeOptions: [],
-      majorOptions: [],
-      gradeOptions: [],
-      classnameOptions: [],
       applyRules: {
         keyword: [
           { required: true, message: '必选项，为该分配添加唯一识别的key', trigger: 'blur' }

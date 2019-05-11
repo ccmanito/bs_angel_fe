@@ -35,6 +35,13 @@ export function DeleteDorm(params) {
   })
 }
 
+export function getdorminfo(params) {
+  return request({
+    url: `sys/dorm/detail`,
+    method: 'get',
+    params
+  })
+}
 // 学校信息录入
 export function createSchoolApply(data) {
   return request({

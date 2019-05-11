@@ -56,8 +56,8 @@ export default {
     },
     cropSuccess(resData) {
       this.imagecropperShow = false
-      this.image = 'http://ppdlmnzmn.bkt.clouddn.com/' + resData.key // 临时域名
-      this.temp_parem.avatar = 'http://ppdlmnzmn.bkt.clouddn.com/' + resData.key
+      this.image = 'http://ccmanito.cn/' + resData.key // 临时域名
+      this.temp_parem.avatar = 'http://ccmanito.cn/' + resData.key
       this.temp_parem.token = this.userinfo.token
       this.$store.dispatch('SyncAvatar', this.temp_parem).then(() => {
         console.log('执行异步刷新用户信息')

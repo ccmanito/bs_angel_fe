@@ -58,7 +58,6 @@
           width="90">
           <template slot-scope="scope">
             <el-tag :type="ticketstepMap[scope.row.step_id ].tagType" size="mini">{{ ticketstepMap[scope.row.step_id ].title }}</el-tag>
-            <!-- <el-tag :type="scope.row.step_id == 1?'primary':(scope.row.step_id == 3?'warning':'info')" size="mini">{{ scope.row.step_id | ticketStepIdFilter }}</el-tag> -->
           </template>
         </el-table-column>
         <el-table-column
@@ -97,7 +96,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getWorkerList } from '@/api/worker'
+import { getWorkerList, deletetask } from '@/api/worker'
 import ApplyDialog from './components/dormApply'
 
 export default {
@@ -145,7 +144,11 @@ export default {
   },
   methods: {
     handleDelete(index, row) {
-      // console.log(index, row)
+      const params = {}
+      params.id = row.id
+      deletetask(params).then(res => {
+        this.$router.push({ path: '/worker/auth/empty' })
+      })
     },
     handleFilter() {
       const filters = { ...this.searchForm }

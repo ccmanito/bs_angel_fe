@@ -4,8 +4,11 @@
     <el-form-item label="地址" prop="address">
       <el-input v-model="form.address" style="width: 95%;" placeholder="请填写宿舍地址： 邮电东区"/>
     </el-form-item>
-    <el-form-item label="楼/层" prop="floor">
-      <el-input v-model="form.floor" style="width: 95%;" placeholder="请填写楼/层 ： 安美公寓/4楼"/>
+    <el-form-item label="公寓名称" prop="floor">
+      <el-input v-model="form.floor" style="width: 95%;" placeholder="请填写公寓名称 ： 安美公寓"/>
+    </el-form-item>
+    <el-form-item label="宿舍类型" prop="dorm_type">
+      <el-input v-model="form.dorm_type" style="width: 95%;" placeholder="请填写楼层类型：男/女"/>
     </el-form-item>
     <el-form-item label="房间号" prop="dorm_id">
       <el-input v-model="form.dorm_id" style="width: 95%;" placeholder="请输入宿舍房间号： 2405"/>
@@ -60,6 +63,9 @@ export default {
         ],
         dorm_size: [
           { required: true, message: '宿舍房间可住人数必须填写：4、6、8或10', trigger: 'blur' }
+        ],
+        dorm_type: [
+          { required: true, message: '宿舍类型必须填写：男/女', trigger: 'blur' }
         ]
       }
     }

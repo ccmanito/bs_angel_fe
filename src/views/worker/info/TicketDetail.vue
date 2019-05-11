@@ -6,6 +6,7 @@
     <StepOne v-if="step_id === 0"/>
     <stepTwo v-if="step_id === 1"/>
     <stepThree v-if="step_id === 2"/>
+    <stepFour v-if="step_id === 3"/>
   </div>
 </template>
 
@@ -14,16 +15,19 @@
 import StepOne from './components/stepOne'
 import stepTwo from './components/stepTwo'
 import stepThree from './components/stepThree'
+import stepFour from './components/stepFour'
+
 export default {
   components: {
     StepOne,
     stepTwo,
-    stepThree
+    stepThree,
+    stepFour
   },
   data() {
     return {
       step_id: 0,
-      stepList: ['数据收集', '聚类划分', '人性化分配', '分配完成']
+      stepList: ['数据收集', '聚类划分', '宿舍分配', '分配完成']
     }
   },
   created() {

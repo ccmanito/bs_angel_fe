@@ -26,10 +26,10 @@ export default {
         return {
           keyword: '',
           endtime: '',
-          school: '西安邮电大学',
-          college: ['计算机学院'],
+          school: '',
+          college: [],
           major: '',
-          grade: ['2015'],
+          grade: [],
           classname: '',
           remark: '' // 申请原因
         }
@@ -78,6 +78,7 @@ export default {
     }
   },
   created() {
+    this.form.school = this.userInfo.school
   },
   methods: {
     resetForm() {

@@ -105,25 +105,37 @@
         </el-form>
         <el-table
           :data="tableData"
-          border
           size="mini"
           style="width: 95%">
           <el-table-column
             prop="id"
+            align="center"
             label="宿舍Id"
+            width="120"/>
+          <el-table-column
+            prop="address"
+            align="center"
+            label="宿舍地点"
             width="160"/>
           <el-table-column
-            prop="date"
-            label="宿舍地点"
-          />
+            prop="floor"
+            align="center"
+            label="公寓名称"
+            width="160"/>
           <el-table-column
-            prop="status"
+            prop="residents"
+            align="center"
             label="室友信息"
-          />
+          >
+            <template slot-scope="scope">
+              <DormInfo :dorm-data="scope.row.residents"/>
+            </template>
+          </el-table-column>
           <el-table-column
-            prop="data"
-            label="创建时间"
-            width="180"
+            prop="in_date"
+            label="分配时间"
+            align="center"
+            width="220"
           />
         </el-table>
       </div>
@@ -134,11 +146,14 @@
 <script>
 import { mapGetters } from 'vuex'
 import BoxCard from '../components/BoxCard'
+import { getdorminfo } from '@/api/system'
+import DormInfo from './dorminfo'
 
 export default {
   name: 'Teacher',
   components: {
-    BoxCard
+    BoxCard,
+    DormInfo
   },
   filters: {
     filtervalues(status) {
@@ -154,8 +169,7 @@ export default {
       tableData: [],
       ticketStatusMap: {
         0: { title: '待分配', tagType: '' },
-        1: { title: '分配中', tagType: 'info' },
-        2: { title: '已分配', tagType: 'success' }
+        1: { title: '已分配', tagType: 'success' }
       }
     }
   },
@@ -167,9 +181,19 @@ export default {
       'usertype'
     ])
   },
-  mounted() {
+  created() {
+    this.getDormInfo()
+    console.log(this.userInfo.dorm_id)
   },
   methods: {
+    getDormInfo() {
+      const params = {}
+      params.dorm_id = this.userInfo.dorm_id
+      getdorminfo(params).then(res => {
+        console.log(res.data)
+        this.tableData = res.data
+      })
+    }
   }
 }
 </script>

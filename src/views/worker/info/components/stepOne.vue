@@ -25,49 +25,23 @@
         <el-form-item label="创建时间：">
           {{ ticketDetail.create_date }}
         </el-form-item>
+        <el-form-item label="操作" style="margin-top:20px">
+          <el-button :disabled="is_button" size="mini" type="success" @click="Subbit">下一步</el-button>
+        </el-form-item>
       </el-form>
     </el-card>
-    <el-row style="padding: 20px 0px;">
-      <el-col :span="14" >
-        <el-card class="box-card" >
-          <div slot="header" class="clearfix">
-            <span>申请详情</span>
-          </div>
-          <ApplyDetail :disabled="true" :form="ticketData" size="mini" style="margin:0px 30px 0px 0px;"/>
-        </el-card>
-      </el-col>
-
-      <el-col :span="9" :offset="1">
-        <el-row style="margin-top: 20px">
-          <el-card class="box-card" >
-            <div slot="header" class="clearfix">
-              <span>操作</span>
-            </div>
-            <el-form label-position="left" size="mini" label-width="100px" >
-              <span v-if="ticketDetail.countdown === '已关闭'">数据收集完成，可进行下一步</span>
-              <span v-if="ticketDetail.countdown !== '已关闭'">数据收集进行中</span>
-              <p/>
-              <el-form-item label="操作">
-                <el-button :disabled="is_button" type="success" @click="Subbit">下一步</el-button>
-              </el-form-item>
-            </el-form>
-          </el-card>
-        </el-row>
-      </el-col>
-    </el-row>
   </div>
 </template>
 
 <script>
 import { getWorkerDetail, changeSetp } from '@/api/worker'
-import ApplyDetail from './dormDetail'
 
 export default {
   components: {
-    ApplyDetail
   },
   data() {
     return {
+      is_detail: false,
       is_button: true,
       step_id: 0,
       id: 0,
@@ -89,7 +63,6 @@ export default {
       params.step_id = this.step_id
       getWorkerDetail(params).then(res => {
         this.ticketDetail = res.data
-        this.ticketData = JSON.parse(this.ticketDetail.form_data)
         if (this.ticketDetail.countdown === '已关闭') {
           this.is_button = false
         }

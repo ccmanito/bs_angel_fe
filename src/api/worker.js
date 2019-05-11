@@ -17,6 +17,14 @@ export function getWorkerList(params) {
   })
 }
 
+export function deletetask(params) {
+  return request({
+    url: `worker/info`,
+    method: 'delete',
+    params
+  })
+}
+
 // 获取工单详情
 export function getWorkerDetail(params) {
   return request({
@@ -50,6 +58,13 @@ export function get_sse_picture(params) {
   })
 }
 
+export function perform(data) {
+  return request({
+    url: `worker/perfrom/allot`,
+    method: 'post',
+    data: data
+  })
+}
 // 申请权限
 export function create_apply_auth(data) {
   return request({

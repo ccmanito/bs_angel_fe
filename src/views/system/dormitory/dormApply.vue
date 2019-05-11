@@ -27,7 +27,8 @@ export default {
           floor: '',
           dorm_id: '',
           remark: '', // 申请原因
-          dorm_size: ''
+          dorm_size: '',
+          dorm_type: ''
         }
       }
     },
@@ -81,6 +82,7 @@ export default {
       this.form.dorm_id = ''
       this.form.remark = ''
       this.form.dorm_size = ''
+      this.form.dorm_type = ''
     },
     createApply() {
       this.$refs['ApplyDetail'].validate((valid) => {
@@ -91,7 +93,8 @@ export default {
             floor: this.form.floor,
             dorm_id: this.form.dorm_id,
             userinfo: this.userInfo,
-            remark: this.form.remark
+            remark: this.form.remark,
+            dorm_type: this.form.dorm_type
           }
           createWorkApply(data).then(res => {
             this.$notify({

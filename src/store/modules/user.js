@@ -18,6 +18,7 @@ const user = {
     major: '',
     grade: '',
     status: '',
+    dorm_id: '',
     classname: '',
     professional: '', // 职业
     livinghabits: '', // 生活习惯
@@ -44,6 +45,7 @@ const user = {
       state.major = user.major
       state.grade = user.grade
       state.status = user.status
+      state.dorm_id = user.dorm_id
       state.classname = user.classname
       state.professional = user.professional
       state.livinghabits = user.livinghabits

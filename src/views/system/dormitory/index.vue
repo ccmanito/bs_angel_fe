@@ -39,7 +39,13 @@
         <el-table-column
           prop="floor"
           label="楼层"
-          align="center"/>
+          align="center"
+          width="90"/>
+        <el-table-column
+          prop="dorm_type"
+          label="宿舍类型"
+          align="center"
+          width="70"/>
         <el-table-column
           prop="dorm_id"
           label="房间号"
@@ -55,8 +61,11 @@
         <el-table-column
           prop="residents"
           label="住户信息"
-          align="center"
-        />
+          align="center">
+          <template slot-scope="scope">
+            <DormInfo :dorm-data="scope.row.residents"/>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="in_date"
           label="入住时间"
@@ -99,10 +108,12 @@
 import { mapGetters } from 'vuex'
 import { getDormList, EmptyDorm, DeleteDorm } from '@/api/system'
 import DormApply from './dormApply'
+import DormInfo from './dorminfo'
 
 export default {
   components: {
-    DormApply
+    DormApply,
+    DormInfo
   },
   filters: {
   },
