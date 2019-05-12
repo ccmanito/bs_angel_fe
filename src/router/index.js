@@ -110,19 +110,19 @@ export const asyncRouterMap = [
         path: 'info',
         name: '学校信息',
         component: () => import('@/views/system/info'),
-        meta: { title: '学校信息', icon: 'edit', roles: ['admin', 'teacher'] }
+        meta: { title: '学校信息', icon: 'school1', roles: ['admin', 'teacher'] }
       },
       {
         path: 'dorm/info',
         name: '宿舍信息管理',
         component: () => import('@/views/system/dormitory'),
-        meta: { title: '宿舍信息', icon: 'edit', roles: ['admin', 'teacher'] }
+        meta: { title: '宿舍信息', icon: 'dorm1', roles: ['admin', 'teacher'] }
       },
       {
         path: 'user/list',
         name: '用户信息管理',
         component: () => import('@/views/system/userinfo'),
-        meta: { title: '用户信息', icon: 'edit', roles: ['admin', 'teacher'] }
+        meta: { title: '用户信息', icon: 'user111', roles: ['admin', 'teacher'] }
       }
     ]
   },

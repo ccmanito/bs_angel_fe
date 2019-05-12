@@ -1,19 +1,45 @@
 <template>
   <div class="dashboard-container">
-    {{ roles }}
-    <div v-if="roles.includes('admin')">
-      我是超级管理员
-    </div>
+    <panel-group
+      :total-user-count="statistics.totalUserCount"
+      :total-dorm-count="statistics.totalDormCount"
+      :total-visits-count="statistics.totalVisitsCount"
+      :total-school-count="statistics.totalSchoolCount"
+      style="panel-group"
+      @handleSetLineChartData="handleSetLineChartData"/>
+    <el-row :gutter="25">
+      <el-col :span="12">
+        <div class="chart" >
+          <pie-chart v-if="showchart" :total-woman="statistics.total_woman" :total-man="statistics.total_man"/>
+        </div>
+      </el-col>
+      <el-col :span="12">
+        <div class="chart">
+          <pie-dorm-chart v-if="showchart" :total-used-dorm="statistics.total_used_dorm" :total-free-dorm="statistics.total_free_dorm"/>
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import PanelGroup from './PanelGroup'
+import { getstatistics } from '@/api/system'
+import PieChart from './pieChart'
+import PieDormChart from './PicDormChart'
 
 export default {
   name: 'Admin',
+  components: {
+    PanelGroup,
+    PieChart,
+    PieDormChart
+  },
   data() {
     return {
+      showchart: false,
+      statistics: ''
     }
   },
   computed: {
@@ -24,32 +50,40 @@ export default {
       'usertype'
     ])
   },
-  mounted() {
-    this.openPrompt()
+  created() {
+    this.GetStatistics()
   },
   methods: {
-    openPrompt() {
-      if (Object.keys(this.userInfo.interest).length === 0 || Object.keys(this.userInfo.livinghabits).length === 0) {
-        this.showmessage = true
-        this.message = '<u style="color: red">个人习惯</u>及<u style="color: red">兴趣信息</u>待完善，将会影响个人宿舍分配去完善&nbsp&nbsp <a href="/"><u style="color: #2A8AEE">去完善</u></a>'
-      } else if (this.userInfo.school === '' || this.userInfo.sex === '' || this.userInfo.major === '') {
-        this.message = '个人信息待完善&nbsp&nbsp <a href="/"><u style="color: #2A8AEE">去完善</u></a>'
-        this.showmessage = true
-      }
-      if (this.showmessage) {
-        this.$notify({
-          title: '信息补全提醒',
-          dangerouslyUseHTMLString: true,
-          message: '<strong>' + this.message + '</strong>',
-          position: 'bottom-right',
-          duration: 0
-        })
-      }
+    handleSetLineChartData(type) {
+    },
+    GetStatistics() {
+      getstatistics().then(res => {
+        this.statistics = res.data
+        console.log(this.statistics)
+      }).then(() => {
+        this.showchart = true
+      })
     }
   }
 }
 </script>
 
 <style scoped>
-
+/* .dashboard-container {
+  background-color: #F2F6FC;
+} */
+.panel-group{
+  border-radius: 3%;
+  margin-top: 20px;
+}
+.chart {
+  border-radius: 2%;
+  background-color: #FFFFFF;
+}
+.table {
+  border-radius: 2%;
+  width: 100%;
+  height: 300px;
+  background-color: #FFFFFF;
+}
 </style>

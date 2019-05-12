@@ -101,3 +101,10 @@ export function DeleteUser(params) {
     params
   })
 }
+
+export function getstatistics() {
+  return request({
+    url: `sys/statistics`,
+    method: 'get'
+  })
+}

@@ -1,6 +1,5 @@
 <template>
   <div class="dashboard-container">
-
     <div v-if="roles.includes('admin')">
       <admin/>
     </div>
@@ -56,7 +55,7 @@ export default {
   }
 }
 .dashboard-container {
-   background: #ffffff;
+   background: #F2F6FC;
     height: 600px;
     border-radius: 3%;
 }
