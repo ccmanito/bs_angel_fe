@@ -6,11 +6,13 @@
       </div>
       <el-row :gutter="50" class="dorminfo" style="margin-top: 5px">
         <el-col>
-          <el-tag size="mini" style="margin-left:10px;margin-bottom: 10px" type="success">提示：</el-tag>
+          <el-tag size="mini" style="margin-left:10px;margin-bottom: 10px" type="success">提示：每个table数据都可以导出Excel</el-tag>
+          <el-button :loading="downloadLoading" size="mini" class="filter-item" type="success" icon="el-icon-download" @click="handleDownload('male')">导出</el-button>
+
         </el-col>
         <el-col :span="24">
           <el-table
-            :data="resultdata.man_result"
+            :data="man_result"
             size="mini"
             max-height="1250"
             style="width: 100%">
@@ -59,9 +61,12 @@
         </el-col>
       </el-row>
       <el-row :gutter="50" style="margin-top: 20px;">
+        <el-col style="margin-left:10px;margin-bottom: 20px;">
+          <el-button :loading="downloadLoading" size="mini" class="filter-item" type="success" icon="el-icon-download" @click="handleDownload()">导出</el-button>
+        </el-col>
         <el-col :span="24">
           <el-table
-            :data="resultdata.woman_result"
+            :data="woman_result"
             size="mini"
             max-height="1250"
             style="width: 100%">
@@ -127,9 +132,13 @@ export default {
   },
   data() {
     return {
+      data: [],
+      filename: '',
+      downloadLoading: false,
       step_id: 0,
       id: 0,
-      resultdata: {}
+      woman_result: [],
+      man_result: []
     }
   },
   computed: {
@@ -149,8 +158,38 @@ export default {
       params.u_id = this.userInfo.token
       params.step_id = this.step_id
       getWorkerDetail(params).then(res => {
-        this.resultdata = res.data
+        this.woman_result = res.data.woman_result
+        this.man_result = res.data.man_result
       })
+    },
+    handleDownload(msg) {
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = ['id', 'dorm_id', 'address', 'dorm_type', 'floor', 'dorm_size', 'userlist']
+        const filterVal = ['id', 'dorm_id', 'address', 'dorm_type', 'floor', 'dorm_size', 'userlist']
+        if (msg === 'male') {
+          this.data = this.formatJson(filterVal, this.man_result)
+          this.filename = '男生宿舍分配详情表'
+        } else {
+          this.data = this.formatJson(filterVal, this.woman_result)
+          this.filename = '女生宿舍分配详情表'
+        }
+        excel.export_json_to_excel({
+          header: tHeader,
+          data: this.data,
+          filename: this.filename
+        })
+        this.downloadLoading = false
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => {
+        if (j === 'userlist') {
+          return JSON.stringify(v[j])
+        } else {
+          return v[j]
+        }
+      }))
     }
   }
 }
