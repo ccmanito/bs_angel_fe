@@ -1,29 +1,33 @@
-## ??????????????????
 
-# ??node
+===========
 
-# Install dependencies
-npm install
+`??????????????????`
 
-# Serve with hot reload at localhost:80
-npm run dev
+# node????
 
-# Build for production with minification
-npm run build
+Install dependencies
+  `npm install`
 
-# Build for production and view the bundle analyzer report
-npm run build --report
+Serve with hot reload at localhost:80
+  `npm run dev`
 
-## ??npm???????????
+Build for production with minification
+  `npm run build`
 
-  npm install -g cnpm --registry=https://registry.npm.taobao.org
+Build for production and view the bundle analyzer report
+  `npm run build --report`
 
-  cnpm -v
+??npm???????????
 
-  cnpm install
+  `npm install -g cnpm --registry=https://registry.npm.taobao.org`
 
-# Serve with hot reload at localhost:80
-  cnpm run dev
+????
+  `cnpm -v`
 
-# Build for production with minification
-  cnpm run build
+  `cnpm instal`
+
+Serve with hot reload at localhost:80
+  `cnpm run dev`
+
+Build for production with minification
+  `cnpm run build`
