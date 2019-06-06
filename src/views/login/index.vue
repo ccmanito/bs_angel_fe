@@ -36,7 +36,7 @@
       </el-form-item>
       <div>
         <div class="buttons">
-          <el-button class="textbtn" style="color: #404A4B" type="text" @click="showDialog('changeped')">忘记 密码 ? </el-button>
+          <el-button class="textbtn" style="color: #404A4B" type="text" @click="showDialog('changeped')"/>
           <el-button class="textbtn" style="float: right;color: #404A4B" type="text" @click="showDialog('regedit')">没有账户？  去注册></el-button>
         </div>
       </div>

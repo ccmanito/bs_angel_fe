@@ -121,7 +121,7 @@ export default {
     return {
       total_num: 0,
       page: 1,
-      pageSize: 10,
+      pageSize: 20,
       pageSizes: [10, 15, 20, 25, 30, 50, 100],
       loading: false,
       tempdata: [],
@@ -180,7 +180,7 @@ export default {
     fetchData(params) {
       this.loading = true
       this.ticketList = []
-      params = { token: this.userInfo.token, ...params }
+      params = { token: this.userInfo.token, page: this.page, page_size: this.pageSize, ...params }
       getDormList(params).then(res => {
         this.total_num = res.data.totalNum
         this.ticketList = res.data.data

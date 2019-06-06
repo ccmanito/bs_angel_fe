@@ -1,5 +1,5 @@
 <template>
-  <div class="dashboard-container">
+  <div class="student-container">
     <el-row :gutter="20" class="row">
       <el-col :span="14" class="col">
         <div class="baseinfo">
@@ -199,6 +199,9 @@ export default {
 </script>
 
 <style scoped>
+.student-container {
+  background-color: #FFFFFF;
+}
 .test {
     float: left;
     width: 10;

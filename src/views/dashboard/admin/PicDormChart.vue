@@ -19,7 +19,7 @@ export default {
     },
     height: {
       type: String,
-      default: '300px'
+      default: '350px'
     },
     totalFreeDorm: {
       type: Number,
@@ -76,8 +76,8 @@ export default {
             radius: [15, 95],
             center: ['50%', '38%'],
             data: [
-              { value: this.totalFreeDorm, name: 'used' },
-              { value: this.totalUsedDorm, name: 'free' }
+              { value: this.totalFreeDorm, name: 'free' },
+              { value: this.totalUsedDorm, name: 'used' }
             ],
             animationEasing: 'cubicInOut',
             animationDuration: 1000
